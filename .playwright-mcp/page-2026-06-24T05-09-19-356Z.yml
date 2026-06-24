@@ -1,0 +1,437 @@
+- generic [active] [ref=e1]:
+  - generic:
+    - generic:
+      - link "주요 콘텐츠로 이동" [ref=e2] [cursor=pointer]
+      - link "접근성 도움말" [ref=e3] [cursor=pointer]:
+        - /url: https://support.google.com/websearch/answer/181196?hl=ko
+  - generic [ref=e8]:
+    - search [ref=e9]:
+      - generic [ref=e12]:
+        - link "Google 홈으로 이동" [ref=e13] [cursor=pointer]:
+          - /url: https://www.google.com/webhp?hl=ko&ictx=0&sa=X&ved=0ahUKEwim1O-Ejp-VAxWdafUHHYCIJeoQpYkNCAw
+          - img "Google 홈으로 이동" [ref=e14]
+        - generic [ref=e15]:
+          - combobox "검색" [ref=e18]: 농협정보시스템 농협정보시스템
+          - generic [ref=e19]:
+            - button "지우기" [ref=e21] [cursor=pointer]:
+              - img [ref=e23]
+            - generic [ref=e26]:
+              - button "입력 도구" [ref=e27] [cursor=pointer]:
+                - img [ref=e29]
+              - button "음성 검색" [ref=e31] [cursor=pointer]:
+                - img [ref=e32]
+              - button "이미지로 검색" [ref=e34] [cursor=pointer]:
+                - img [ref=e35]
+        - button "검색" [ref=e37] [cursor=pointer]:
+          - img [ref=e40]
+    - generic [ref=e42]:
+      - button "설정" [ref=e44] [cursor=pointer]:
+        - img [ref=e47]
+      - button "공유" [ref=e50] [cursor=pointer]:
+        - img [ref=e54]
+      - generic [ref=e56]:
+        - button "Google 앱" [ref=e58] [cursor=pointer]:
+          - img [ref=e59]
+        - link "로그인" [ref=e63] [cursor=pointer]:
+          - /url: https://accounts.google.com/ServiceLogin?hl=ko&passive=true&continue=https://www.google.com/search%3Fq%3D%25EB%2586%258D%25ED%2598%2591%25EC%25A0%2595%25EB%25B3%25B4%25EC%258B%259C%25EC%258A%25A4%25ED%2585%259C%26sca_esv%3De43a3ddc6f999d2a%26source%3Dhp%26ei%3DVmY7ao6CEajO1e8Pzs2B-A4%26iflsig%3DABILxe8AAAAAajt0ZvkiIrBqbkDC5AE5x6A7_oL6WO1M%26ved%3D0ahUKEwiOhajyjZ-VAxUoZ_UHHc5mAO8Q4dUDCC4%26uact%3D5%26oq%3D%25EB%2586%258D%25ED%2598%2591%25EC%25A0%2595%25EB%25B3%25B4%25EC%258B%259C%25EC%258A%25A4%25ED%2585%259C%26gs_lp%3DEgdnd3Mtd2l6IhXrho3tmJHsoJXrs7Tsi5zsiqTthZwyCxAuGIAEGMcBGK8BMgUQABiABDIFEAAYgAQyBRAAGIAEMgUQABiABDIFEAAYgAQyBRAAGIAEMgUQABiABDIFEAAYgAQyBBAAGB5IwDVQAFgAcAB4AJABAJgBY6ABY6oBATG4AQPIAQD4AQGYAgGgAnOYAwCSBwMwLjGgB_4IsgcDMC4xuAdzwgcDMy0xyAcMgAgB%26sclient%3Dgws-wiz%26sei%3DfGY7asDPNsOj1e8Pp82UgAg&ec=futura_srp_og_si_72236_p
+  - generic [ref=e65]:
+    - navigation [ref=e71]:
+      - generic [ref=e77]:
+        - list [ref=e78]:
+          - listitem [ref=e79]:
+            - link "AI 모드" [ref=e82] [cursor=pointer]:
+              - /url: /search?q=%EB%86%8D%ED%98%91%EC%A0%95%EB%B3%B4%EC%8B%9C%EC%8A%A4%ED%85%9C&sca_esv=e43a3ddc6f999d2a&udm=50&source=hp&fbs=ABfTbFUgt-aXEFkBhPo84x72c1XoLHFs6TcISYM3FayWAWWA79YpAo9J0bSAl93sasSb-hgWXcTpckRyhh4upS9rSvub4dyk1nLaV8dDmdARd68ZpDyFhmZNCDcSYQlZrt_ec3KO2Avv9OhlzLtLwIrkxQeL0Fja9wZeIi1UA_NVXpTM3F5zF_C7nUVbwkN-JqZgSu_hcGVzDItQu8j5aVVxTkO8OH6naWlmVfXXp-DoGMaY7rQ6VZo&aep=1&ntc=1&sa=X&ved=2ahUKEwim1O-Ejp-VAxWdafUHHYCIJeoQ2J8OegQIDhAD
+              - generic [ref=e85]: AI 모드
+          - listitem [ref=e86]:
+            - link "전체" [disabled] [ref=e87]:
+              - generic [ref=e89]: 전체
+          - listitem [ref=e90]:
+            - link "이미지" [ref=e91] [cursor=pointer]:
+              - /url: /search?sca_esv=e43a3ddc6f999d2a&udm=2&fbs=ABfTbFUgt-aXEFkBhPo84x72c1XoLHFs6TcISYM3FayWAWWA79YpAo9J0bSAl93sasSb-hgWXcTpckRyhh4upS9rSvub4dyk1nLaV8dDmdARd68ZpDyFhmZNCDcSYQlZrt_ec3KO2Avv9OhlzLtLwIrkxQeL0Fja9wZeIi1UA_NVXpTM3F5zF_C7nUVbwkN-JqZgSu_hcGVzDItQu8j5aVVxTkO8OH6naWlmVfXXp-DoGMaY7rQ6VZo&q=%EB%86%8D%ED%98%91%EC%A0%95%EB%B3%B4%EC%8B%9C%EC%8A%A4%ED%85%9C&sa=X&ved=2ahUKEwim1O-Ejp-VAxWdafUHHYCIJeoQtKgLegQIFBAB
+              - generic [ref=e93]: 이미지
+          - listitem [ref=e94]:
+            - link "뉴스" [ref=e95] [cursor=pointer]:
+              - /url: /search?sca_esv=e43a3ddc6f999d2a&q=%EB%86%8D%ED%98%91%EC%A0%95%EB%B3%B4%EC%8B%9C%EC%8A%A4%ED%85%9C&tbm=nws&source=lnms&fbs=ABfTbFUgt-aXEFkBhPo84x72c1XoLHFs6TcISYM3FayWAWWA79YpAo9J0bSAl93sasSb-hgWXcTpckRyhh4upS9rSvub4dyk1nLaV8dDmdARd68ZpDyFhmZNCDcSYQlZrt_ec3KO2Avv9OhlzLtLwIrkxQeL0Fja9wZeIi1UA_NVXpTM3F5zF_C7nUVbwkN-JqZgSu_hcGVzDItQu8j5aVVxTkO8OH6naWlmVfXXp-DoGMaY7rQ6VZo&sa=X&ved=2ahUKEwim1O-Ejp-VAxWdafUHHYCIJeoQ0pQJegQIEBAB
+              - generic [ref=e97]: 뉴스
+          - listitem [ref=e98]:
+            - link "동영상" [ref=e99] [cursor=pointer]:
+              - /url: /search?sca_esv=e43a3ddc6f999d2a&udm=7&fbs=ABfTbFUgt-aXEFkBhPo84x72c1XoLHFs6TcISYM3FayWAWWA79YpAo9J0bSAl93sasSb-hgWXcTpckRyhh4upS9rSvub4dyk1nLaV8dDmdARd68ZpDyFhmZNCDcSYQlZrt_ec3KO2Avv9OhlzLtLwIrkxQeL0Fja9wZeIi1UA_NVXpTM3F5zF_C7nUVbwkN-JqZgSu_hcGVzDItQu8j5aVVxTkO8OH6naWlmVfXXp-DoGMaY7rQ6VZo&q=%EB%86%8D%ED%98%91%EC%A0%95%EB%B3%B4%EC%8B%9C%EC%8A%A4%ED%85%9C&sa=X&ved=2ahUKEwim1O-Ejp-VAxWdafUHHYCIJeoQtKgLegQIExAB
+              - generic [ref=e101]: 동영상
+          - listitem [ref=e102]:
+            - link "쇼핑" [ref=e103] [cursor=pointer]:
+              - /url: /search?sca_esv=e43a3ddc6f999d2a&udm=28&fbs=ABfTbFUgt-aXEFkBhPo84x72c1XoLHFs6TcISYM3FayWAWWA79YpAo9J0bSAl93sasSb-hgWXcTpckRyhh4upS9rSvub4dyk1nLaV8dDmdARd68ZpDyFhmZNCDcSYQlZrt_ec3KO2Avv9OhlzLtLwIrkxQeL0Fja9wZeIi1UA_NVXpTM3F5zF_C7nUVbwkN-JqZgSu_hcGVzDItQu8j5aVVxTkO8OH6naWlmVfXXp-DoGMaY7rQ6VZo&q=%EB%86%8D%ED%98%91%EC%A0%95%EB%B3%B4%EC%8B%9C%EC%8A%A4%ED%85%9C&ved=1t:220175&ictx=111
+              - generic [ref=e105]: 쇼핑
+          - listitem [ref=e106]:
+            - link "짧은 동영상" [ref=e107] [cursor=pointer]:
+              - /url: /search?sca_esv=e43a3ddc6f999d2a&udm=39&fbs=ABfTbFUgt-aXEFkBhPo84x72c1XoLHFs6TcISYM3FayWAWWA79YpAo9J0bSAl93sasSb-hgWXcTpckRyhh4upS9rSvub4dyk1nLaV8dDmdARd68ZpDyFhmZNCDcSYQlZrt_ec3KO2Avv9OhlzLtLwIrkxQeL0Fja9wZeIi1UA_NVXpTM3F5zF_C7nUVbwkN-JqZgSu_hcGVzDItQu8j5aVVxTkO8OH6naWlmVfXXp-DoGMaY7rQ6VZo&q=%EB%86%8D%ED%98%91%EC%A0%95%EB%B3%B4%EC%8B%9C%EC%8A%A4%ED%85%9C&sa=X&ved=2ahUKEwim1O-Ejp-VAxWdafUHHYCIJeoQs6gLegQIERAB
+              - generic [ref=e109]: 짧은 동영상
+          - listitem [ref=e110]:
+            - button "필터 더보기" [ref=e111] [cursor=pointer]:
+              - generic "필터 더보기" [ref=e112]:
+                - generic [ref=e113]:
+                  - generic [ref=e114]: 더보기
+                  - img [ref=e116]
+        - button "도구" [ref=e119] [cursor=pointer]:
+          - generic [ref=e121]:
+            - generic [ref=e122]: 도구
+            - img [ref=e124]
+    - heading "검색결과" [level=1] [ref=e126]
+    - main [ref=e132]:
+      - tabpanel [ref=e146]:
+        - generic [ref=e150]:
+          - generic [ref=e155]:
+            - generic [ref=e162]:
+              - button "사진 보기" [ref=e166] [cursor=pointer]:
+                - generic [ref=e169]: 사진 보기
+              - generic [ref=e171]:
+                - link "농협정보시스템 지도" [ref=e173] [cursor=pointer]:
+                  - /url: /maps/place/%EB%86%8D%ED%98%91%EC%A0%95%EB%B3%B4%EC%8B%9C%EC%8A%A4%ED%85%9C/data=!4m2!3m1!1s0x0:0x1fe6eb6441046937?sa=X&ved=1t:2428&ictx=111
+                  - img "농협정보시스템 지도" [ref=e175]
+                - link "농협정보시스템 지도" [ref=e177] [cursor=pointer]:
+                  - /url: /maps/place/%EB%86%8D%ED%98%91%EC%A0%95%EB%B3%B4%EC%8B%9C%EC%8A%A4%ED%85%9C/data=!4m2!3m1!1s0x0:0x1fe6eb6441046937?sa=X&ved=1t:2428&ictx=111
+                  - img "농협정보시스템 지도" [ref=e179]
+            - generic [ref=e183]:
+              - heading "농협정보시스템" [level=2] [ref=e186]
+              - generic [ref=e187]:
+                - generic [ref=e189]:
+                  - text: "3.9"
+                  - img "별 5개 중 3.9개" [ref=e190]
+                  - button "Google 리뷰 37개" [ref=e195] [cursor=pointer]
+                  - text: 서울특별시의 통신 회사
+                - button "농협정보시스템에 대한 옵션 더보기" [ref=e202] [cursor=pointer]:
+                  - img "농협정보시스템에 대한 옵션 더보기" [ref=e203]:
+                    - img [ref=e205]
+          - generic [ref=e210]:
+            - generic [ref=e219]:
+              - link "경로" [ref=e221]:
+                - generic [ref=e222] [cursor=pointer]:
+                  - img [ref=e224]
+                  - generic [ref=e229]: 경로
+              - link "리뷰" [ref=e231] [cursor=pointer]:
+                - /url: /search?sca_esv=e43a3ddc6f999d2a&si=APenkKnzv9m99ToiohAuzpadUwbOz34nZJ3j2Ukmo5XOUYWApjgLdFrVP2yfiF0LjzG_q3wNPUYnZhMQjgepHk5jumSz-wzC-7tazQIsyOaptXsidtDW2eatF_Cr9Qa90I9Y1Rm8oAjBUDXviwzAcOke0DlqazbyCQ%3D%3D&q=%EB%86%8D%ED%98%91%EC%A0%95%EB%B3%B4%EC%8B%9C%EC%8A%A4%ED%85%9C+%EB%A6%AC%EB%B7%B0&sa=X&ved=2ahUKEwim1O-Ejp-VAxWdafUHHYCIJeoQ0bkNegQIHxAF
+                - generic [ref=e232]:
+                  - img [ref=e234]
+                  - generic [ref=e236]: 리뷰
+              - button "+3":
+                - generic [ref=e238] [cursor=pointer]: "+3"
+            - separator [ref=e239]
+          - generic [ref=e243]:
+            - generic [ref=e245]:
+              - generic [ref=e247]:
+                - generic [ref=e248]:
+                  - link "주소" [ref=e249] [cursor=pointer]:
+                    - /url: /search?sca_esv=e43a3ddc6f999d2a&q=%EB%86%8D%ED%98%91%EC%A0%95%EB%B3%B4%EC%8B%9C%EC%8A%A4%ED%85%9C+%EC%A3%BC%EC%86%8C&ludocid=2298783475639281975&sa=X&ved=2ahUKEwim1O-Ejp-VAxWdafUHHYCIJeoQ6BN6BAgdEAI
+                  - text: ":"
+                - text: 서울특별시 서초구 양재2동 매헌로 24
+              - generic [ref=e252]:
+                - generic [ref=e253]: "전화번호:"
+                - link "02-3497-2004번에 전화" [ref=e256] [cursor=pointer]:
+                  - /url: "#"
+                  - text: 02-3497-2004
+              - generic [ref=e257]:
+                - generic [ref=e258]:
+                  - link "영업시간" [ref=e259] [cursor=pointer]:
+                    - /url: /search?sca_esv=e43a3ddc6f999d2a&q=%EB%86%8D%ED%98%91%EC%A0%95%EB%B3%B4%EC%8B%9C%EC%8A%A4%ED%85%9C+%EC%98%81%EC%97%85%EC%8B%9C%EA%B0%84&ludocid=2298783475639281975&sa=X&ved=2ahUKEwim1O-Ejp-VAxWdafUHHYCIJeoQ6BN6BAgbEAI
+                  - text: ":"
+                - button "영업 중 · 오후 6:00에 영업 종료" [ref=e261]:
+                  - generic [ref=e267]: 영업 중 · 오후 6:00에 영업 종료
+              - generic [ref=e271]:
+                - generic [ref=e272]:
+                  - button "수정 제안하기" [ref=e275] [cursor=pointer]
+                  - text: ·
+                  - link "이 비즈니스의 소유주인가요?" [ref=e276] [cursor=pointer]:
+                    - /url: https://business.google.com/create?hl=ko&getstarted&authuser=0&fp=2298783475639281975&gmbsrc=kr-ko-et-ip-z-gmb-s-z-l~skp%7Cclaimbz%7Cu&ppsrc=GMBSI
+                - generic [ref=e277]:
+                  - generic [ref=e278]: 누락된 정보 추가
+                  - link "웹사이트 추가" [ref=e279] [cursor=pointer]: 웹사이트 추가
+            - separator [ref=e280]
+          - generic [ref=e284]:
+            - heading "리뷰" [level=3] [ref=e287]
+            - generic [ref=e292]:
+              - generic [ref=e293]:
+                - heading "Google 리뷰" [level=3] [ref=e294]
+                - button "추가 정보" [ref=e299] [cursor=pointer]:
+                  - img [ref=e301]
+                - generic [ref=e303]:
+                  - button "리뷰하기" [ref=e307] [cursor=pointer]:
+                    - generic [ref=e308]: 리뷰하기
+                  - link "사진 추가" [ref=e310] [cursor=pointer]:
+                    - /url: "#"
+              - generic [ref=e311]:
+                - text: "3.9"
+                - img "별 5개 중 3.9개" [ref=e312]
+                - button "Google 리뷰 37개" [ref=e317] [cursor=pointer]
+          - generic [ref=e324]:
+            - heading "사이트링크가 있는 웹 검색결과" [level=2] [ref=e325]
+            - generic [ref=e326]:
+              - generic [ref=e330]:
+                - generic [ref=e332]:
+                  - link "농협정보시스템 농협정보시스템 https://www.nonghyupit.com" [ref=e334] [cursor=pointer]:
+                    - /url: https://www.nonghyupit.com/
+                    - heading "농협정보시스템" [level=3] [ref=e335]
+                    - generic [ref=e341]:
+                      - generic [ref=e343]: 농협정보시스템
+                      - generic [ref=e345]: https://www.nonghyupit.com
+                  - button "검색결과에 관한 정보" [ref=e346] [cursor=pointer]:
+                    - img [ref=e349]
+                - generic [ref=e353]:
+                  - text: 메시지 전송 서비스
+                  - emphasis [ref=e354]: 농협
+                  - text: 중앙회, nh
+                  - emphasis [ref=e355]: 농협
+                  - text: 은행, nh
+                  - emphasis [ref=e356]: 농협
+                  - text: 카드 외 범
+                  - emphasis [ref=e357]: 농협
+                  - text: 계열사의 메시지를 통합 전송하는 서비스 입니다. 케. 케이휘슬 당신의 소중한 제보가 더욱 청렴한 ...
+              - group "방문 기록 기반 맞춤형 추천" [ref=e358]:
+                - rowgroup [ref=e359]:
+                  - row "농협마크 디지털 금융·경제·유통으로의 전환을 효과적으로 지원하고, 디지털 ..." [ref=e360]:
+                    - cell "농협마크 디지털 금융·경제·유통으로의 전환을 효과적으로 지원하고, 디지털 ..." [ref=e361]:
+                      - generic [ref=e367]:
+                        - heading "농협마크" [level=3] [ref=e368]:
+                          - link "농협마크" [ref=e369] [cursor=pointer]:
+                            - /url: https://www.nonghyupit.com/nonghyupit/4464/subview.do
+                            - text: 농협마크
+                        - generic [ref=e372]: 디지털 금융·경제·유통으로의 전환을 효과적으로 지원하고, 디지털 ...
+                  - row "본사 시스템구축 · ITO서비스 · IT서비스 · 솔루션 · 윤리경영 · 윤리경영 소 ..." [ref=e373]:
+                    - cell "본사 시스템구축 · ITO서비스 · IT서비스 · 솔루션 · 윤리경영 · 윤리경영 소 ..." [ref=e374]:
+                      - generic [ref=e380]:
+                        - heading "본사" [level=3] [ref=e381]:
+                          - link "본사" [ref=e382] [cursor=pointer]:
+                            - /url: https://www.nonghyupit.com/nonghyupit/4560/subview.do
+                            - text: 본사
+                        - generic [ref=e385]: 시스템구축 · ITO서비스 · IT서비스 · 솔루션 · 윤리경영 · 윤리경영 소 ...
+                  - row "대표이사 인사말 농협정보시스템은 IT 전문 기업으로 경제, 유통, 금융 등 다양한 분야 ..." [ref=e386]:
+                    - cell "대표이사 인사말 농협정보시스템은 IT 전문 기업으로 경제, 유통, 금융 등 다양한 분야 ..." [ref=e387]:
+                      - generic [ref=e393]:
+                        - heading "대표이사 인사말" [level=3] [ref=e394]:
+                          - link "대표이사 인사말" [ref=e395] [cursor=pointer]:
+                            - /url: https://www.nonghyupit.com/nonghyupit/4499/subview.do
+                            - text: 대표이사 인사말
+                        - generic [ref=e398]: 농협정보시스템은 IT 전문 기업으로 경제, 유통, 금융 등 다양한 분야 ...
+                  - row "IT서비스 다양한 산업에서 축적된 IT역량과 개발 경험을 바탕으로, 농협에 꼭 맞 ..." [ref=e399]:
+                    - cell "IT서비스 다양한 산업에서 축적된 IT역량과 개발 경험을 바탕으로, 농협에 꼭 맞 ..." [ref=e400]:
+                      - generic [ref=e406]:
+                        - heading "IT서비스" [level=3] [ref=e407]:
+                          - link "IT서비스" [ref=e408] [cursor=pointer]:
+                            - /url: https://www.nonghyupit.com/nonghyupit/4570/subview.do
+                            - text: IT서비스
+                        - generic [ref=e411]: 다양한 산업에서 축적된 IT역량과 개발 경험을 바탕으로, 농협에 꼭 맞 ...
+                  - row "nonghyupit.com 검색결과 더보기 »" [ref=e413]:
+                    - cell "nonghyupit.com 검색결과 더보기 »" [ref=e414]:
+                      - link "nonghyupit.com 검색결과 더보기 »" [ref=e416] [cursor=pointer]:
+                        - /url: /search?q=%EB%86%8D%ED%98%91%EC%A0%95%EB%B3%B4%EC%8B%9C%EC%8A%A4%ED%85%9C+site:nonghyupit.com&sca_esv=e43a3ddc6f999d2a&sa=X&ved=2ahUKEwim1O-Ejp-VAxWdafUHHYCIJeoQrAN6BAg8EAE
+          - generic [ref=e424]:
+            - generic [ref=e427]:
+              - link "농협정보시스템 나무위키 https://namu.wiki › 농협정보시스템" [ref=e429] [cursor=pointer]:
+                - /url: https://namu.wiki/w/%EB%86%8D%ED%98%91%EC%A0%95%EB%B3%B4%EC%8B%9C%EC%8A%A4%ED%85%9C
+                - heading "농협정보시스템" [level=3] [ref=e430]
+                - generic [ref=e436]:
+                  - generic [ref=e438]: 나무위키
+                  - generic [ref=e440]: https://namu.wiki › 농협정보시스템
+              - button "검색결과에 관한 정보" [ref=e441] [cursor=pointer]:
+                - img [ref=e444]
+            - generic [ref=e448]:
+              - emphasis [ref=e449]: 농협
+              - text: 중앙회, 지역
+              - emphasis [ref=e450]: 농협
+              - text: ","
+              - emphasis [ref=e451]: 농협
+              - text: 계열사, 농림 수산 관련 기관, 시중 금융기관 등의
+              - emphasis [ref=e452]: 시스템
+              - text: 개발,
+              - emphasis [ref=e453]: 시스템
+              - text: 유지 보수 사업을 영위하는
+              - emphasis [ref=e454]: 농협
+              - text: 중앙회의 자회사.
+          - generic [ref=e462]:
+            - generic [ref=e465]:
+              - link "농협정보시스템 채용사이트 intojob.co.kr https://dware.intojob.co.kr › nonghyupit" [ref=e467] [cursor=pointer]:
+                - /url: https://dware.intojob.co.kr/nonghyupit.html
+                - heading "농협정보시스템 채용사이트" [level=3] [ref=e468]
+                - generic [ref=e470]:
+                  - img [ref=e475]
+                  - generic [ref=e477]:
+                    - generic [ref=e479]: intojob.co.kr
+                    - generic [ref=e481]: https://dware.intojob.co.kr › nonghyupit
+              - button "검색결과에 관한 정보" [ref=e482] [cursor=pointer]:
+                - img [ref=e485]
+            - generic [ref=e489]:
+              - text: 디지털 농협, 당신이 중심입니다. · 신입 · 경력0; 계약직0. 채용공고 바로가기.
+              - emphasis [ref=e490]: 농협정보시스템
+              - text: . 함께 성장하며, 농협을 이끌어갈 인재를 기다 ...
+          - generic [ref=e498]:
+            - generic [ref=e501]:
+              - link "(주)농협정보시스템 취업 합격 스펙 잡코리아 https://www.jobkorea.co.kr › company › PassAvgSpec" [ref=e503] [cursor=pointer]:
+                - /url: https://www.jobkorea.co.kr/company/1882267/PassAvgSpec
+                - heading "(주)농협정보시스템 취업 합격 스펙" [level=3] [ref=e504]
+                - generic [ref=e510]:
+                  - generic [ref=e512]: 잡코리아
+                  - generic [ref=e514]: https://www.jobkorea.co.kr › company › PassAvgSpec
+              - button "검색결과에 관한 정보" [ref=e515] [cursor=pointer]:
+                - img [ref=e518]
+            - generic [ref=e522]:
+              - emphasis [ref=e523]: 합격스펙 상세
+              - text: · 학업성취도 7.8 · 외국어능력 7.7 · 전문능력 7.3 · 대외활동경험 1.5. 스펙지수. 255 스펙지수 설명보기. 기업스펙 255; 개인최대 527; 개인 ...
+          - generic [ref=e531]:
+            - generic [ref=e534]:
+              - link "Google Play의 (주)농협정보시스템 개발자 Android 앱 Google Play https://play.google.com › store › apps › developer › id=(..." [ref=e536] [cursor=pointer]:
+                - /url: https://play.google.com/store/apps/developer?id=%28%EC%A3%BC%29%EB%86%8D%ED%98%91%EC%A0%95%EB%B3%B4%EC%8B%9C%EC%8A%A4%ED%85%9C&hl=ko
+                - heading "Google Play의 (주)농협정보시스템 개발자 Android 앱" [level=3] [ref=e537]
+                - generic [ref=e543]:
+                  - generic [ref=e545]: Google Play
+                  - generic [ref=e547]: https://play.google.com › store › apps › developer › id=(...
+              - button "검색결과에 관한 정보" [ref=e548] [cursor=pointer]:
+                - img [ref=e551]
+            - generic [ref=e555]:
+              - emphasis [ref=e556]: Google Play의 (주)농협정보시스템 개발자 Android 앱
+              - text: . 게임 · 앱 · 영화/TV · 도서 · 키즈 ... (주)농협정보시스템. 스크린샷 이미지. 썸네일 이미지. 위드팜업(농가경영 ...
+          - generic [ref=e564]:
+            - generic [ref=e567]:
+              - link "(주)농협정보시스템 2026년 기업정보 | 기업리뷰 262건, 3.1 ... 잡플래닛 https://www.jobplanet.co.kr › (주)농협정보시스템" [ref=e569] [cursor=pointer]:
+                - /url: https://www.jobplanet.co.kr/companies/90389/reviews/%EB%86%8D%ED%98%91%EC%A0%95%EB%B3%B4%EC%8B%9C%EC%8A%A4%ED%85%9C
+                - heading "(주)농협정보시스템 2026년 기업정보 | 기업리뷰 262건, 3.1 ..." [level=3] [ref=e570]
+                - generic [ref=e576]:
+                  - generic [ref=e578]: 잡플래닛
+                  - generic [ref=e580]: https://www.jobplanet.co.kr › (주)농협정보시스템
+              - button "검색결과에 관한 정보" [ref=e581] [cursor=pointer]:
+                - img [ref=e584]
+            - generic [ref=e588]:
+              - text: (
+              - emphasis [ref=e589]: 주)농협정보시스템 기업정보
+              - text: "- 장단점 키워드: 금융, 동종, 수준 | 기업리뷰: 전대미문 최악의 경영진 및 경영기획조직 무능한 회사 | (주)농협정보시스템의 관련 ..."
+          - generic [ref=e597]:
+            - generic [ref=e600]:
+              - link "[농협정보시스템] 2025년 상반기 신규직 채용 공고 링커리어 https://linkareer.com › activity" [ref=e602] [cursor=pointer]:
+                - /url: https://linkareer.com/activity/243021
+                - heading "[농협정보시스템] 2025년 상반기 신규직 채용 공고" [level=3] [ref=e603]
+                - generic [ref=e609]:
+                  - generic [ref=e611]: 링커리어
+                  - generic [ref=e613]: https://linkareer.com › activity
+              - button "검색결과에 관한 정보" [ref=e614] [cursor=pointer]:
+                - img [ref=e617]
+            - generic [ref=e620]:
+              - generic [ref=e621]: 2025. 5. 26. —
+              - generic [ref=e622]:
+                - text: "["
+                - emphasis [ref=e623]: 농협정보시스템
+                - text: "] 2025년 상반기 신규직 채용 공고합니다. 모집인원은 0명이며 전체, 백엔드/서버개발 분야의 인재들은 지원해주세요!"
+          - generic [ref=e631]:
+            - generic [ref=e634]:
+              - link "<초점>농협정보 폭주에 중소 협력사 '부글부글' BI KOREA https://m.bikorea.net › news › articleView" [ref=e636] [cursor=pointer]:
+                - /url: https://m.bikorea.net/news/articleView.html?idxno=45192
+                - heading "<초점>농협정보 폭주에 중소 협력사 '부글부글'" [level=3] [ref=e637]
+                - generic [ref=e643]:
+                  - generic [ref=e645]: BI KOREA
+                  - generic [ref=e647]: https://m.bikorea.net › news › articleView
+              - button "검색결과에 관한 정보" [ref=e648] [cursor=pointer]:
+                - img [ref=e651]
+            - generic [ref=e654]:
+              - generic [ref=e655]: 2026. 2. 9. —
+              - generic [ref=e656]:
+                - text: 현재
+                - emphasis [ref=e657]: 농협정보시스템
+                - text: 은 NH농협은행 차세대 IT '프로젝트 네오' 중 BPR/PI 및 전자금융 개편 대응개발 부문을 주사업자로 맡고 있다. 이 사업에 최근 농협 ...
+          - generic [ref=e665]:
+            - heading "관련 검색어" [level=2] [ref=e667]
+            - generic [ref=e669]:
+              - generic [ref=e670]:
+                - link "농협정보시스템 채용" [ref=e674] [cursor=pointer]:
+                  - /url: /search?sca_esv=e43a3ddc6f999d2a&q=%EB%86%8D%ED%98%91%EC%A0%95%EB%B3%B4%EC%8B%9C%EC%8A%A4%ED%85%9C+%EC%B1%84%EC%9A%A9&sa=X&ved=2ahUKEwim1O-Ejp-VAxWdafUHHYCIJeoQ1QJ6BAhYEAE
+                  - generic [ref=e675]:
+                    - generic [ref=e680]: 농협정보시스템 채용
+                    - img [ref=e684]
+                - link "농협정보시스템 연봉" [ref=e689] [cursor=pointer]:
+                  - /url: /search?sca_esv=e43a3ddc6f999d2a&q=%EB%86%8D%ED%98%91%EC%A0%95%EB%B3%B4%EC%8B%9C%EC%8A%A4%ED%85%9C+%EC%97%B0%EB%B4%89&sa=X&ved=2ahUKEwim1O-Ejp-VAxWdafUHHYCIJeoQ1QJ6BAhrEAE
+                  - generic [ref=e690]:
+                    - generic [ref=e695]: 농협정보시스템 연봉
+                    - img [ref=e699]
+                - link "농협 정보 시스템 후기" [ref=e704] [cursor=pointer]:
+                  - /url: /search?sca_esv=e43a3ddc6f999d2a&q=%EB%86%8D%ED%98%91+%EC%A0%95%EB%B3%B4+%EC%8B%9C%EC%8A%A4%ED%85%9C+%ED%9B%84%EA%B8%B0&sa=X&ved=2ahUKEwim1O-Ejp-VAxWdafUHHYCIJeoQ1QJ6BAhqEAE
+                  - generic [ref=e705]:
+                    - generic [ref=e710]: 농협 정보 시스템 후기
+                    - img [ref=e714]
+                - link "농협 정보 시스템 개발" [ref=e719] [cursor=pointer]:
+                  - /url: /search?sca_esv=e43a3ddc6f999d2a&q=%EB%86%8D%ED%98%91+%EC%A0%95%EB%B3%B4+%EC%8B%9C%EC%8A%A4%ED%85%9C+%EA%B0%9C%EB%B0%9C&sa=X&ved=2ahUKEwim1O-Ejp-VAxWdafUHHYCIJeoQ1QJ6BAhpEAE
+                  - generic [ref=e720]:
+                    - generic [ref=e725]: 농협 정보 시스템 개발
+                    - img [ref=e729]
+              - generic [ref=e731]:
+                - link "농협정보시스템 블라인드" [ref=e735] [cursor=pointer]:
+                  - /url: /search?sca_esv=e43a3ddc6f999d2a&q=%EB%86%8D%ED%98%91%EC%A0%95%EB%B3%B4%EC%8B%9C%EC%8A%A4%ED%85%9C+%EB%B8%94%EB%9D%BC%EC%9D%B8%EB%93%9C&sa=X&ved=2ahUKEwim1O-Ejp-VAxWdafUHHYCIJeoQ1QJ6BAhoEAE
+                  - generic [ref=e736]:
+                    - generic [ref=e741]: 농협정보시스템 블라인드
+                    - img [ref=e745]
+                - link "농협 정보 시스템 it" [ref=e750] [cursor=pointer]:
+                  - /url: /search?sca_esv=e43a3ddc6f999d2a&q=%EB%86%8D%ED%98%91+%EC%A0%95%EB%B3%B4+%EC%8B%9C%EC%8A%A4%ED%85%9C+it&sa=X&ved=2ahUKEwim1O-Ejp-VAxWdafUHHYCIJeoQ1QJ6BAhnEAE
+                  - generic [ref=e751]:
+                    - generic [ref=e756]: 농협 정보 시스템 it
+                    - img [ref=e760]
+                - link "농협 정보 시스템 입찰공고" [ref=e765] [cursor=pointer]:
+                  - /url: /search?sca_esv=e43a3ddc6f999d2a&q=%EB%86%8D%ED%98%91+%EC%A0%95%EB%B3%B4+%EC%8B%9C%EC%8A%A4%ED%85%9C+%EC%9E%85%EC%B0%B0%EA%B3%B5%EA%B3%A0&sa=X&ved=2ahUKEwim1O-Ejp-VAxWdafUHHYCIJeoQ1QJ6BAhiEAE
+                  - generic [ref=e766]:
+                    - generic [ref=e771]: 농협 정보 시스템 입찰공고
+                    - img [ref=e775]
+                - link "농협정보시스템 경력 채용" [ref=e780] [cursor=pointer]:
+                  - /url: /search?sca_esv=e43a3ddc6f999d2a&q=%EB%86%8D%ED%98%91%EC%A0%95%EB%B3%B4%EC%8B%9C%EC%8A%A4%ED%85%9C+%EA%B2%BD%EB%A0%A5+%EC%B1%84%EC%9A%A9&sa=X&ved=2ahUKEwim1O-Ejp-VAxWdafUHHYCIJeoQ1QJ6BAhdEAE
+                  - generic [ref=e781]:
+                    - generic [ref=e786]: 농협정보시스템 경력 채용
+                    - img [ref=e790]
+      - navigation [ref=e794]:
+        - heading "페이지 탐색" [level=1] [ref=e795]
+        - text: "1"
+        - link "Page 2" [ref=e798] [cursor=pointer]:
+          - /url: /search?q=%EB%86%8D%ED%98%91%EC%A0%95%EB%B3%B4%EC%8B%9C%EC%8A%A4%ED%85%9C&sca_esv=e43a3ddc6f999d2a&ei=fWY7auahDJ3T1e8PgJGW0Q4&start=10&sa=N&sstk=AU9db-CHnK5_rJzxGajMiXfGT-f5JwIyhc-e3QKKBeu6Qd7SClswIuwppRJd9OSuZT83Y29KvKFe95wHPeKLTFG6C9WId3YgpAkz6A&ved=2ahUKEwim1O-Ejp-VAxWdafUHHYCIJeoQ8tMDegQIShAE
+          - text: "2"
+        - link "Page 3" [ref=e800] [cursor=pointer]:
+          - /url: /search?q=%EB%86%8D%ED%98%91%EC%A0%95%EB%B3%B4%EC%8B%9C%EC%8A%A4%ED%85%9C&sca_esv=e43a3ddc6f999d2a&ei=fWY7auahDJ3T1e8PgJGW0Q4&start=20&sa=N&sstk=AU9db-CHnK5_rJzxGajMiXfGT-f5JwIyhc-e3QKKBeu6Qd7SClswIuwppRJd9OSuZT83Y29KvKFe95wHPeKLTFG6C9WId3YgpAkz6A&ved=2ahUKEwim1O-Ejp-VAxWdafUHHYCIJeoQ8tMDegQIShAG
+          - text: "3"
+        - link "Page 4" [ref=e802] [cursor=pointer]:
+          - /url: /search?q=%EB%86%8D%ED%98%91%EC%A0%95%EB%B3%B4%EC%8B%9C%EC%8A%A4%ED%85%9C&sca_esv=e43a3ddc6f999d2a&ei=fWY7auahDJ3T1e8PgJGW0Q4&start=30&sa=N&sstk=AU9db-CHnK5_rJzxGajMiXfGT-f5JwIyhc-e3QKKBeu6Qd7SClswIuwppRJd9OSuZT83Y29KvKFe95wHPeKLTFG6C9WId3YgpAkz6A&ved=2ahUKEwim1O-Ejp-VAxWdafUHHYCIJeoQ8tMDegQIShAI
+          - text: "4"
+        - link "Page 5" [ref=e804] [cursor=pointer]:
+          - /url: /search?q=%EB%86%8D%ED%98%91%EC%A0%95%EB%B3%B4%EC%8B%9C%EC%8A%A4%ED%85%9C&sca_esv=e43a3ddc6f999d2a&ei=fWY7auahDJ3T1e8PgJGW0Q4&start=40&sa=N&sstk=AU9db-CHnK5_rJzxGajMiXfGT-f5JwIyhc-e3QKKBeu6Qd7SClswIuwppRJd9OSuZT83Y29KvKFe95wHPeKLTFG6C9WId3YgpAkz6A&ved=2ahUKEwim1O-Ejp-VAxWdafUHHYCIJeoQ8tMDegQIShAK
+          - text: "5"
+        - link "Page 6" [ref=e806] [cursor=pointer]:
+          - /url: /search?q=%EB%86%8D%ED%98%91%EC%A0%95%EB%B3%B4%EC%8B%9C%EC%8A%A4%ED%85%9C&sca_esv=e43a3ddc6f999d2a&ei=fWY7auahDJ3T1e8PgJGW0Q4&start=50&sa=N&sstk=AU9db-CHnK5_rJzxGajMiXfGT-f5JwIyhc-e3QKKBeu6Qd7SClswIuwppRJd9OSuZT83Y29KvKFe95wHPeKLTFG6C9WId3YgpAkz6A&ved=2ahUKEwim1O-Ejp-VAxWdafUHHYCIJeoQ8tMDegQIShAM
+          - text: "6"
+        - link "Page 7" [ref=e808] [cursor=pointer]:
+          - /url: /search?q=%EB%86%8D%ED%98%91%EC%A0%95%EB%B3%B4%EC%8B%9C%EC%8A%A4%ED%85%9C&sca_esv=e43a3ddc6f999d2a&ei=fWY7auahDJ3T1e8PgJGW0Q4&start=60&sa=N&sstk=AU9db-CHnK5_rJzxGajMiXfGT-f5JwIyhc-e3QKKBeu6Qd7SClswIuwppRJd9OSuZT83Y29KvKFe95wHPeKLTFG6C9WId3YgpAkz6A&ved=2ahUKEwim1O-Ejp-VAxWdafUHHYCIJeoQ8tMDegQIShAO
+          - text: "7"
+        - link "Page 8" [ref=e810] [cursor=pointer]:
+          - /url: /search?q=%EB%86%8D%ED%98%91%EC%A0%95%EB%B3%B4%EC%8B%9C%EC%8A%A4%ED%85%9C&sca_esv=e43a3ddc6f999d2a&ei=fWY7auahDJ3T1e8PgJGW0Q4&start=70&sa=N&sstk=AU9db-CHnK5_rJzxGajMiXfGT-f5JwIyhc-e3QKKBeu6Qd7SClswIuwppRJd9OSuZT83Y29KvKFe95wHPeKLTFG6C9WId3YgpAkz6A&ved=2ahUKEwim1O-Ejp-VAxWdafUHHYCIJeoQ8tMDegQIShAQ
+          - text: "8"
+        - link "Page 9" [ref=e812] [cursor=pointer]:
+          - /url: /search?q=%EB%86%8D%ED%98%91%EC%A0%95%EB%B3%B4%EC%8B%9C%EC%8A%A4%ED%85%9C&sca_esv=e43a3ddc6f999d2a&ei=fWY7auahDJ3T1e8PgJGW0Q4&start=80&sa=N&sstk=AU9db-CHnK5_rJzxGajMiXfGT-f5JwIyhc-e3QKKBeu6Qd7SClswIuwppRJd9OSuZT83Y29KvKFe95wHPeKLTFG6C9WId3YgpAkz6A&ved=2ahUKEwim1O-Ejp-VAxWdafUHHYCIJeoQ8tMDegQIShAS
+          - text: "9"
+        - link "Page 10" [ref=e814] [cursor=pointer]:
+          - /url: /search?q=%EB%86%8D%ED%98%91%EC%A0%95%EB%B3%B4%EC%8B%9C%EC%8A%A4%ED%85%9C&sca_esv=e43a3ddc6f999d2a&ei=fWY7auahDJ3T1e8PgJGW0Q4&start=90&sa=N&sstk=AU9db-CHnK5_rJzxGajMiXfGT-f5JwIyhc-e3QKKBeu6Qd7SClswIuwppRJd9OSuZT83Y29KvKFe95wHPeKLTFG6C9WId3YgpAkz6A&ved=2ahUKEwim1O-Ejp-VAxWdafUHHYCIJeoQ8tMDegQIShAU
+          - text: "10"
+        - heading "다음" [level=2] [ref=e816]:
+          - link "다음" [ref=e817] [cursor=pointer]:
+            - /url: /search?q=%EB%86%8D%ED%98%91%EC%A0%95%EB%B3%B4%EC%8B%9C%EC%8A%A4%ED%85%9C&sca_esv=e43a3ddc6f999d2a&ei=fWY7auahDJ3T1e8PgJGW0Q4&start=10&sa=N&sstk=AU9db-CHnK5_rJzxGajMiXfGT-f5JwIyhc-e3QKKBeu6Qd7SClswIuwppRJd9OSuZT83Y29KvKFe95wHPeKLTFG6C9WId3YgpAkz6A&ved=2ahUKEwim1O-Ejp-VAxWdafUHHYCIJeoQ8NMDegQIShAW
+            - generic [ref=e819]: 다음
+      - navigation
+    - contentinfo [ref=e821]:
+      - heading "바닥글 링크" [level=1] [ref=e822]
+      - generic [ref=e826]:
+        - generic [ref=e828]:
+          - text: 대한민국
+          - generic [ref=e830]:
+            - button "양재1동 서울특별시 서초구 - IP 주소 기반" [ref=e832] [cursor=pointer]:
+              - generic [ref=e833]: 양재1동 서울특별시 서초구
+              - generic [ref=e835]:
+                - text: "-"
+                - generic [ref=e836]: IP 주소 기반
+            - text: "-"
+            - button "위치 업데이트" [ref=e838] [cursor=pointer]: 위치 업데이트
+        - generic [ref=e841]:
+          - link "도움말" [ref=e842] [cursor=pointer]:
+            - /url: https://support.google.com/websearch/?p=ws_results_help&hl=ko&fg=1
+          - link "의견 보내기" [ref=e843] [cursor=pointer]:
+            - /url: "#"
+          - link "개인정보처리방침" [ref=e844] [cursor=pointer]:
+            - /url: https://policies.google.com/privacy?hl=ko&fg=1
+          - link "약관" [ref=e845] [cursor=pointer]:
+            - /url: https://policies.google.com/terms?hl=ko&fg=1
