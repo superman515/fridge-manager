@@ -238,6 +238,28 @@
 - ✅ addedAt, addedBy 메타데이터 저장됨 (serverTimestamp, uid)
 
 ### 다음 단계
-- Issue #6 (Family Group Creation & Invitation): 그룹 생성/초대 기능
-  - 프로필에서 그룹 생성 버튼 추가
-  - 초대 코드로 그룹 참여 기능
+- Issue #7 (Food Filtering & Sorting): 카테고리 필터 & 정렬 기능
+
+---
+
+## Issue #6 — Food Expiry Status & Color Visualization
+**날짜:** 2026-07-12
+
+### 구현 내용
+유통기한 상태 색상 시각화. Issue #5의 statusFor 함수와 색상 적용으로 완료.
+
+- statusColors: 경과(#DC2626), 임박(#F59E0B), 안전(#16A34A)
+- statusBgs: 배경색 (반투명)
+- 음식 카드: 상태별 색상 적용, 남은 일수 표시
+- 요약 카드: 상태별 필터 버튼 색상
+- 동적 계산: 오늘 기준 실시간 업데이트
+
+### Acceptance Criteria 달성
+- ✅ 유통기한 계산 로직 구현 (정확한 일수 계산)
+- ✅ safe/urgent/expired 상태별 색상 매핑 동작
+- ✅ 음식 카드에 상태별 색상 표시됨
+- ✅ 남은 일수가 정확하게 표시됨
+- ✅ 자정을 넘어가도 상태가 올바르게 업데이트됨 (Firestore 실시간 리스너)
+
+### 다음 단계
+- Issue #7 (Food Filtering & Sorting): 카테고리 필터 & 정렬 기능
