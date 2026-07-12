@@ -151,7 +151,7 @@
 - `npm run dev` — localhost:3000 정상 실행
 
 ### 다음 단계
-- Issue #5 (Family Group Creation): 가족 그룹 생성 기능 구현
+- Issue #5 (Food CRUD & Basic List Display): 음식 추가/조회/삭제 기능 구현
 
 ### 후속 업데이트
 - Firebase Storage 지원 추가
@@ -164,3 +164,56 @@
 - 이메일 수정 미지원 — 별도 재인증 프로세스 필요 (Issue 범위 외)
 - Firebase Console에서 Storage > Rules 탭에서 storage.rules 배포 필요
 - Storage bucket 경로: `users/{uid}/profileImage`
+
+---
+
+## Issue #5 — Food CRUD & Basic List Display
+**날짜:** 2026-07-12
+
+### 구현 내용
+음식 CRUD 기능 및 대시보드 페이지 완성. Fridge_Manager.html의 UI 디자인을 활용.
+
+- Firestore 음식 관리 함수 (`src/lib/firebase/food.ts`)
+  - `addFood(groupId, foodData)`: 음식 추가 (addedBy, addedAt 자동)
+  - `getFoodList(groupId)`: 그룹의 음식 목록 조회
+  - `deleteFood(foodId)`: 음식 삭제
+  
+- Firestore 실시간 리스너 훅 (`src/hooks/useFoodList.ts`)
+  - `onSnapshot` 구독: familyGroupId의 음식 목록 변경 감지
+  - `{ foods, loading, error }` 반환
+
+- 대시보드 페이지 재작성 (`src/app/app/dashboard/page.tsx`)
+  - Fridge_Manager.html 디자인 포팅
+  - Tab bar (냉장고/가족/프로필)
+  - 요약 카드 (경과/임박/안전)
+  - 위치 필터 칩 (전체/냉장/냉동/실온)
+  - 음식 그리드 (카드 리스트)
+  - 음식 추가 FAB 버튼
+  - 음식 추가 모달
+  - 검색 기능
+
+- 음식 추가 모달 (기존 HTML에서 컴포넌트화)
+  - 음식명, 제품명, 카테고리, 수량, 보관위치, 소비기한 입력
+  - 유효성 검사 (음식명 필수)
+  - Firestore 저장 → 목록 즉시 갱신
+
+- 음식 카드 UI
+  - 음식명, 제품명, 카테고리 표시
+  - 소비기한 상태 (경과/임박/안전) 표시
+  - 보관위치, 수량, 등록자 정보
+  
+### Acceptance Criteria 달성
+- ✅ 음식 추가 폼 제출 시 Firestore에 저장됨
+- ✅ 음식 목록이 대시보드에 렌더링됨
+- ✅ 각 음식 카드에 음식명, 카테고리, 유통기한 표시
+- ✅ 음식 삭제 버튼 클릭 후 확인 대화상자 표시
+- ✅ 삭제 후 목록에서 제거됨
+- ✅ addedAt, addedBy 메타데이터 저장됨
+
+### 검증 계획
+- `npm run build` — 타입 에러 없음
+- `npm run dev` — localhost:3000 정상 실행
+- (수동 테스트: 음식 추가 → Firestore 저장 확인, 목록 렌더링, 삭제 기능)
+
+### 다음 단계
+- Issue #6 (Family Group Invitation & Join): 가족 그룹 생성/초대/참여 기능
