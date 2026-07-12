@@ -114,3 +114,45 @@
 - Route guard는 클라이언트 사이드 (`onAuthStateChanged`). Middleware/firebase-admin 사용 안 함 (의도적 — MVP 스코프)
 - Google 회원가입과 로그인이 동일 함수 사용 가능 (Firebase 기본 동작)
 - AuthContext는 Firebase User만 expose (Firestore `users/{uid}` 프로필은 별도 hook으로 나중에)
+
+---
+
+## Issue #4 — User Profile Management
+**날짜:** 2026-07-12
+
+### 구현 내용
+- Firestore 실시간 리스너 훅 (`src/hooks/useUserProfile.ts`)
+  - `onSnapshot` 구독: `users/{uid}` 문서 변경 감지
+  - `{ profile, loading, error }` 반환
+- 프로필 업데이트 함수 (`src/lib/firebase/auth.ts` 확장)
+  - `updateUserProfile(uid, updates)`: Firestore doc 업데이트 + Firebase Auth `updateProfile` 동기화
+  - `displayName`, `photoURL` 필드만 수정 (familyGroupId 절대 건드리지 않음)
+- 프로필 페이지 전체 재작성 (`src/app/app/profile/page.tsx`)
+  - 읽기 모드: `.profile-card` 카드 (초성 + 사진 지원), "프로필 수정" 버튼
+  - 수정 모드: `displayName` (필수) + `photoURL` (URL, 선택) 폼
+  - Firestore 리스너로 변경사항 즉시 UI 반영
+  - "로그아웃" 버튼 유지
+
+### 구현 상세
+- `useUserProfile` 훅: `firebaseUser` 변경 시 리스너 재구독, 언마운트 시 정리
+- 프로필 편집: 폼 필드에서 local state 관리 → Save 클릭 시 `updateUserProfile` 호출
+- 사진 미지정 시 displayName 첫 글자를 배경 동그라미로 표시 (CSS `.profile-avatar` 활용)
+- 이미지 URL 유효성은 HTML `<input type="url">` 기본 검증에만 의존
+
+### Acceptance Criteria 달성
+- ✅ 프로필 페이지 로드 시 현재 사용자 정보 표시
+- ✅ displayName 및 photoURL 수정 가능
+- ✅ 수정 사항이 Firestore에 저장됨
+- ✅ 수정 후 UI 즉시 갱신 (Firestore 리스너)
+- ✅ 프로필 페이지는 인증된 사용자만 접근 가능 (상위 layout 라우트 가드)
+
+### 검증 완료
+- `npm run build` — 모든 라우트 컴파일, 타입 에러 없음
+- `npm run dev` — localhost:3000 정상 실행
+
+### 다음 단계
+- Issue #5 (Family Group Creation): 가족 그룹 생성 기능 구현
+
+### 참고사항
+- 이미지 업로드 (Firebase Storage) 미지원 — photoURL은 외부 URL 링크만 가능
+- 이메일 수정 미지원 — 별도 재인증 프로세스 필요 (Issue 범위 외)
