@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signOut, updateUserProfile } from "@/lib/firebase/auth";
+import { uploadProfileImage, deleteProfileImage } from "@/lib/firebase/storage";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserProfile } from "@/hooks/useUserProfile";
 
@@ -12,7 +13,9 @@ export default function ProfilePage() {
   const { profile, loading } = useUserProfile();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({ displayName: "", photoURL: "" });
+  const [preview, setPreview] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   if (loading) {
     return (
@@ -42,18 +45,64 @@ export default function ProfilePage() {
       displayName: profile.displayName,
       photoURL: profile.photoURL || "",
     });
+    setPreview(profile.photoURL);
+    setError(null);
     setIsEditing(true);
+  }
+
+  function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setError("이미지 파일만 선택할 수 있습니다.");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setError("파일 크기는 5MB 이하여야 합니다.");
+      return;
+    }
+
+    setError(null);
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      setPreview(event.target?.result as string);
+      setFormData({ ...formData, photoURL: "" });
+    };
+    reader.readAsDataURL(file);
   }
 
   async function handleSave() {
     if (!firebaseUser || !formData.displayName.trim()) return;
     setIsSaving(true);
+    setError(null);
+
     try {
+      let newPhotoURL: string | null = null;
+
+      if (preview && preview.startsWith("data:")) {
+        // 새로운 파일이 선택됨
+        const file = (
+          document.querySelector('input[type="file"]') as HTMLInputElement
+        )?.files?.[0];
+        if (file) {
+          newPhotoURL = await uploadProfileImage(firebaseUser.uid, file);
+        }
+      } else if (formData.photoURL) {
+        // URL 입력됨 (기존 동작)
+        newPhotoURL = formData.photoURL.trim();
+      } else if (preview && !preview.startsWith("data:")) {
+        // 이미지가 있지만 새 파일이 없으면 기존 유지
+        newPhotoURL = preview;
+      }
+
       await updateUserProfile(firebaseUser.uid, {
         displayName: formData.displayName.trim(),
-        photoURL: formData.photoURL.trim() || null,
+        photoURL: newPhotoURL,
       });
       setIsEditing(false);
+    } catch (err) {
+      setError((err as Error).message || "저장 중 오류가 발생했습니다.");
     } finally {
       setIsSaving(false);
     }
@@ -61,6 +110,8 @@ export default function ProfilePage() {
 
   function handleCancel() {
     setIsEditing(false);
+    setPreview(null);
+    setError(null);
   }
 
   function getInitial(name: string): string {
@@ -78,6 +129,12 @@ export default function ProfilePage() {
           }}
           style={{ marginTop: "24px" }}
         >
+          {error && (
+            <div className="auth-error" style={{ marginBottom: "16px" }}>
+              {error}
+            </div>
+          )}
+
           <div className="form-group">
             <label className="form-label">이름</label>
             <input
@@ -92,16 +149,37 @@ export default function ProfilePage() {
           </div>
 
           <div className="form-group">
-            <label className="form-label">프로필 사진 URL</label>
+            <label className="form-label">프로필 사진</label>
+            {preview && (
+              <div
+                style={{
+                  marginBottom: "12px",
+                  textAlign: "center",
+                  maxHeight: "200px",
+                }}
+              >
+                <img
+                  src={preview}
+                  alt="미리보기"
+                  style={{
+                    maxWidth: "100%",
+                    maxHeight: "200px",
+                    borderRadius: "8px",
+                    objectFit: "cover",
+                  }}
+                />
+              </div>
+            )}
             <input
-              type="url"
+              type="file"
+              accept="image/*"
+              onChange={handleFileSelect}
               className="form-input"
-              value={formData.photoURL}
-              onChange={(e) =>
-                setFormData({ ...formData, photoURL: e.target.value })
-              }
-              placeholder="https://example.com/photo.jpg"
+              style={{ padding: "8px" }}
             />
+            <div style={{ fontSize: "12px", color: "#64748B", marginTop: "6px" }}>
+              최대 5MB, JPG/PNG 지원
+            </div>
           </div>
 
           <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
