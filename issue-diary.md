@@ -153,6 +153,14 @@
 ### 다음 단계
 - Issue #5 (Family Group Creation): 가족 그룹 생성 기능 구현
 
+### 후속 업데이트
+- Firebase Storage 지원 추가
+  - `storage.rules`: 사용자만 자신의 프로필 이미지 업로드/삭제 가능 (5MB 제한, 이미지만)
+  - `src/lib/firebase/storage.ts`: `uploadProfileImage()`, `deleteProfileImage()` 함수
+  - 프로필 페이지: file input + 미리보기 (클라이언트 사이드 FileReader)
+  - 에러 처리: 파일 크기/타입 검증
+
 ### 참고사항
-- 이미지 업로드 (Firebase Storage) 미지원 — photoURL은 외부 URL 링크만 가능
 - 이메일 수정 미지원 — 별도 재인증 프로세스 필요 (Issue 범위 외)
+- Firebase Console에서 Storage > Rules 탭에서 storage.rules 배포 필요
+- Storage bucket 경로: `users/{uid}/profileImage`
