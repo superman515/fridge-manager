@@ -913,6 +913,52 @@ input, select {
   font-size: 18px;
 }
 
+/* Auth pages */
+.auth-card {
+  max-width: 400px;
+  margin: 48px auto;
+  padding: 32px 24px;
+  background: #fff;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+}
+
+.auth-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #0F172A;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.auth-error {
+  background: rgba(220, 38, 38, 0.08);
+  color: #DC2626;
+  font-size: 13px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  margin-bottom: 14px;
+}
+
+.auth-divider {
+  text-align: center;
+  color: #94A3B8;
+  font-size: 12px;
+  margin: 18px 0;
+}
+
+.auth-switch {
+  text-align: center;
+  font-size: 13px;
+  color: #64748B;
+  margin-top: 18px;
+}
+
+.auth-switch a {
+  color: #2563EB;
+  font-weight: 600;
+}
+
 /* Hide tabs */
 .hidden {
   display: none;
