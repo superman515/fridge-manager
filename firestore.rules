@@ -1,0 +1,46 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    // --- users/{uid} ---
+    // A user may read/write only their own user document.
+    match /users/{uid} {
+      allow read, write: if isOwner(uid);
+    }
+
+    // --- familyGroups/{groupId} ---
+    // Readable by any member listed in members[].
+    // Writable only by the creator (createdBy).
+    // NOTE: joining a group (adding yourself to members[]) is a write to an
+    // existing doc, so the creator-only write rule will need to be relaxed
+    // or handled via a Cloud Function / transaction in the invite-join issue.
+    match /familyGroups/{groupId} {
+      allow read: if isSignedIn() && request.auth.uid in resource.data.members;
+      allow create: if isSignedIn() && request.resource.data.createdBy == request.auth.uid;
+      allow update, delete: if isSignedIn() && resource.data.createdBy == request.auth.uid;
+    }
+
+    // --- foods/{foodId} ---
+    // Readable/writable only by members of the food's familyGroupId.
+    match /foods/{foodId} {
+      allow read: if isSignedIn() &&
+        request.auth.uid in get(/databases/$(database)/documents/familyGroups/$(resource.data.familyGroupId)).data.members;
+
+      allow create: if isSignedIn() &&
+        request.auth.uid in get(/databases/$(database)/documents/familyGroups/$(request.resource.data.familyGroupId)).data.members &&
+        request.resource.data.addedBy == request.auth.uid;
+
+      allow update, delete: if isSignedIn() &&
+        request.auth.uid in get(/databases/$(database)/documents/familyGroups/$(resource.data.familyGroupId)).data.members;
+    }
+  }
+}
