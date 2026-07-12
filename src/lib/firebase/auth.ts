@@ -7,7 +7,7 @@ import {
   updateProfile,
   type User as FirebaseUser,
 } from "firebase/auth";
-import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
+import { doc, setDoc, getDoc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase/client";
 import type { User } from "@/types/user";
 
@@ -64,6 +64,19 @@ export async function signUpWithEmail(
 
 export async function signOut(): Promise<void> {
   await firebaseSignOut(auth);
+}
+
+export async function updateUserProfile(
+  uid: string,
+  updates: { displayName?: string; photoURL?: string | null }
+): Promise<void> {
+  const ref = doc(db, "users", uid);
+  await updateDoc(ref, updates);
+
+  const currentUser = auth.currentUser;
+  if (currentUser) {
+    await updateProfile(currentUser, updates);
+  }
 }
 
 export function getAuthErrorMessage(error: unknown): string {
