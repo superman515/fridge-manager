@@ -46,3 +46,71 @@
 - Firebase 콘솔 프로젝트 아직 생성 안 함 → 사용자가 수동으로 생성 후 테스트
 - Mockup에 로그인/회원가입 마크업 없음 → Issue #3에서 UI 디자인 필요 (기존 토큰 재사용: `.btn-primary`, `.form-input`, 컬러 팔레트)
 - Tab bar 컴포넌트(mockup에서 사용) 아직 미구현 → 대시보드/음식 CRUD Issue에서 처리
+
+---
+
+## Issue #3 — User Authentication (Google & Email Login)
+**날짜:** 2026-07-12
+
+### 구현 내용
+- Firebase 인증 헬퍼 모듈 (`src/lib/firebase/auth.ts`) — Google/Email 로그인/회원가입, 로그아웃
+  - `toAppUser()`: Firebase의 nullable 필드를 앱 User 타입으로 정규화
+  - `upsertUserDoc()`: `users/{uid}` Firestore 문서 자동 생성/병합
+  - `getAuthErrorMessage()`: Firebase 에러 코드 → 한글 사용자 메시지
+- 인증 상태 관리 (`src/context/AuthContext.tsx` + `src/hooks/useAuth.ts`)
+  - AuthProvider: `onAuthStateChanged` 구독, 로딩/에러 상태 노출
+  - useAuth 훅: Context 접근, 미사용 시 명확한 에러 throw
+- 로그인 페이지 (`src/app/auth/login/page.tsx`) 클라이언트 컴포넌트
+  - 이메일/비밀번호 폼 + Google 로그인 버튼
+  - 클라이언트 사이드 유효성 검사 (필수 입력, 이메일 형식)
+  - Firebase 에러 처리, 한글 에러 메시지 표시
+  - 성공 → `/app/dashboard` 리다이렉트
+- 회원가입 페이지 (`src/app/auth/signup/page.tsx`) 클라이언트 컴포넌트
+  - 이름/이메일/비밀번호/비밀번호 확인 폼
+  - 유효성 검사 (비밀번호 ≥6자, 일치, 올바른 이메일)
+  - Google 회원가입 (Firebase는 로그인/회원가입 동일하게 처리)
+- 라우트 보호 (`src/app/app/layout.tsx`) 클라이언트 컴포넌트
+  - `useAuth()` 구독: `loading` 중 "로딩 중..." 표시
+  - `firebaseUser` 없으면 `router.replace("/auth/login")`
+  - `/app/dashboard`, `/app/family`, `/app/profile` 모두 보호됨
+- 로그아웃 기능 (`src/app/app/profile/page.tsx`)
+  - 프로필 페이지에 "로그아웃" 버튼 추가
+  - `.account-btn.danger` 기존 CSS 클래스 재사용
+  - 로그아웃 → `/auth/login` 리다이렉트
+- CSS 추가 (`src/app/globals.css` additive)
+  - `.auth-card`, `.auth-title`, `.auth-error`, `.auth-divider`, `.auth-switch`
+  - Mockup 미설계 화면이므로 새로 정의 (`.profile-card` 패턴 참고, 에러 red `#DC2626` 사용)
+- Landing 페이지 업데이트 (`src/app/page.tsx`)
+  - 로그인/회원가입 링크를 inline 스타일 → `.btn-secondary`/`.btn-primary` CSS 클래스로 변경
+
+### 구현 상세
+- Firebase SDK v11의 `getAuth()` 기본값: `browserLocalPersistence` (IndexedDB 기반)
+  - 추가 세팅 불필요, 페이지 새로고침 후 자동 세션 복원
+- `upsertUserDoc()` 전략: 첫 로그인/가입 시 doc 생성, 이후는 merge 모드
+  - `familyGroupId` 필드 절대 덮어쓰지 않음 (나중에 가족 그룹 ID가 저장됨)
+- Firestore rules와 일관성: `users/{uid}` 생성으로 rules의 `isOwner(uid)` 조건 만족
+- 세션 보안: 진정한 보안은 Firestore rules에서 enforced (UI 리다이렉트는 UX 일뿐)
+
+### Acceptance Criteria 달성
+- ✅ Google 로그인 동작 (signInWithPopup)
+- ✅ 이메일 로그인 동작 (signInWithEmailAndPassword)
+- ✅ 회원가입 폼 유효성 검사 포함 (클라이언트 사이드 검증)
+- ✅ 로그아웃 후 로그인 상태 초기화 (signOut → 세션 삭제)
+- ✅ 페이지 새로고침 후 세션 유지됨 (Firebase 기본 localStorage)
+- ✅ 미인증 사용자는 /app/* 접근 불가 (route guard)
+
+### 검증 완료
+- `npm run build` — 모든 라우트 컴파일, 타입 에러 없음
+- `npm run dev` — localhost:3000 정상 실행
+- (수동 테스트 진행 중: 회원가입 → Firestore doc 생성 확인, 로그인, 로그아웃, 미인증 리다이렉트)
+
+### 다음 단계
+- Issue #4 (Food CRUD & Basic List Display): 음식 추가/목록 표시/삭제 기능
+  - `/app/dashboard` 실제 UI 구현
+  - Tab bar 컴포넌트 추가
+  - 음식 목록 필터링/정렬
+
+### 참고사항
+- Route guard는 클라이언트 사이드 (`onAuthStateChanged`). Middleware/firebase-admin 사용 안 함 (의도적 — MVP 스코프)
+- Google 회원가입과 로그인이 동일 함수 사용 가능 (Firebase 기본 동작)
+- AuthContext는 Firebase User만 expose (Firestore `users/{uid}` 프로필은 별도 hook으로 나중에)
