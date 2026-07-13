@@ -8,7 +8,7 @@ import { useFoodList } from "@/hooks/useFoodList";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { addFood, deleteFood } from "@/lib/firebase/food";
 import { getFamilyGroup } from "@/lib/firebase/family";
-import type { Food, FoodLocation } from "@/types/food";
+import type { Food, FoodCategory, FoodLocation } from "@/types/food";
 import type { FamilyGroup } from "@/types/familyGroup";
 
 const TODAY = new Date(2026, 6, 8);
@@ -17,6 +17,9 @@ const statusColors: Record<string, string> = { 경과: "#DC2626", 임박: "#F59E
 const statusBgs: Record<string, string> = { 경과: "rgba(220,38,38,.10)", 임박: "rgba(245,158,11,.12)", 안전: "rgba(22,163,74,.10)" };
 
 type StatusKey = keyof typeof statusColors;
+type SortKey = "expiry" | "addedNewest" | "addedOldest" | "category";
+
+const CATEGORY_ORDER: FoodCategory[] = ["채소", "과일", "육류", "유제품", "수산", "기타"];
 
 interface FormState {
   name: string;
@@ -44,6 +47,25 @@ function mdOf(expiry: string): string {
   return `${m}/${d}`;
 }
 
+function addedAtMillis(f: Food): number {
+  return f.addedAt?.toMillis() ?? 0;
+}
+
+function compareFoods(a: Food, b: Food, sortBy: SortKey): number {
+  switch (sortBy) {
+    case "expiry":
+      return a.expiryDate.localeCompare(b.expiryDate);
+    case "addedNewest":
+      return addedAtMillis(b) - addedAtMillis(a);
+    case "addedOldest":
+      return addedAtMillis(a) - addedAtMillis(b);
+    case "category":
+      return CATEGORY_ORDER.indexOf(a.category) - CATEGORY_ORDER.indexOf(b.category);
+    default:
+      return 0;
+  }
+}
+
 export default function DashboardPage() {
   const { firebaseUser } = useAuth();
   const { profile } = useUserProfile();
@@ -54,6 +76,7 @@ export default function DashboardPage() {
   const [locationFilter, setLocationFilter] = useState<FoodLocation | "all">("all");
   const [statusFilter, setStatusFilter] = useState<StatusKey | "all">("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState<SortKey>("expiry");
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState<FormState>({
     name: "",
@@ -69,11 +92,13 @@ export default function DashboardPage() {
     getFamilyGroup(familyGroupId).then(g => setGroup(g));
   }, [familyGroupId]);
 
-  const filtered = foods.filter(f =>
-    (locationFilter === "all" || f.location === locationFilter) &&
-    (statusFilter === "all" || statusFor(f.expiryDate).key === statusFilter) &&
-    (searchQuery === "" || f.name.includes(searchQuery))
-  );
+  const filtered = foods
+    .filter(f =>
+      (locationFilter === "all" || f.location === locationFilter) &&
+      (statusFilter === "all" || statusFor(f.expiryDate).key === statusFilter) &&
+      (searchQuery === "" || f.name.includes(searchQuery))
+    )
+    .sort((a, b) => compareFoods(a, b, sortBy));
 
   const counts: Record<StatusKey, number> = { 경과: 0, 임박: 0, 안전: 0 };
   foods.forEach(f => counts[statusFor(f.expiryDate).key]++);
@@ -199,6 +224,19 @@ export default function DashboardPage() {
           <button className={`chip ${locationFilter === "실온" ? "active" : ""}`} onClick={() => setLocationFilter("실온")}>
             실온
           </button>
+        </div>
+
+        <div className="sort-container">
+          <select
+            className="sort-select"
+            value={sortBy}
+            onChange={e => setSortBy(e.target.value as SortKey)}
+          >
+            <option value="expiry">유통기한순 (임박순)</option>
+            <option value="addedNewest">추가순 (최신순)</option>
+            <option value="addedOldest">추가순 (오래된순)</option>
+            <option value="category">카테고리별</option>
+          </select>
         </div>
 
         <div className="food-grid">

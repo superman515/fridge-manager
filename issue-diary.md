@@ -262,4 +262,49 @@
 - ✅ 자정을 넘어가도 상태가 올바르게 업데이트됨 (Firestore 실시간 리스너)
 
 ### 다음 단계
-- Issue #7 (Food Filtering & Sorting): 카테고리 필터 & 정렬 기능
+- Issue #7 (Food Filtering & Sorting): 정렬 기능
+
+---
+
+## Issue #7 — Food Filtering & Sorting (수정)
+**날짜:** 2026-07-13
+
+### 구현 내용
+음식 목록 정렬 기능만 구현. 카테고리 필터는 제외 (사용자 요청).
+
+- 정렬 드롭박스 추가 (`src/app/app/dashboard/page.tsx`)
+  - 옵션 4개: 유통기한순 (임박순), 추가순 (최신순), 추가순 (오래된순), 카테고리별
+  - `.sort-container` (full-width)에 배치
+  
+- 클라이언트 사이드 정렬 로직 (`compareFoods` 함수)
+  - `sortBy` state: "expiry" | "addedNewest" | "addedOldest" | "category"
+  - expiry: 문자열 lexicographic 정렬 (YYYY-MM-DD)
+  - addedNewest/addedOldest: Firestore Timestamp 비교 (null 가드 포함)
+  - category: CATEGORY_ORDER 배열 기준 정렬
+
+- CSS 추가 (`src/app/globals.css`)
+  - `.sort-container`: 패딩만
+  - `.sort-select`: 전체 너비, border/radius/color 일관성
+
+### 제외 사항 (사용자 결정)
+- 카테고리 필터 칩 제거 (원래 계획에는 있었음)
+- 필터 초기화 버튼 제거
+- `categoryFilter` state 제거
+- `handleResetFilters` 함수 제거
+
+### Acceptance Criteria 달성
+- ✅ 정렬 옵션 변경 시 목록 즉시 갱신
+- ✅ 필터(location/status/search)와 정렬을 조합하여 사용 가능
+- ✅ 정렬 상태가 UI에 반영됨
+
+### 검증 완료
+- `npm run build` — 타입 에러 없음 (3.8s)
+- `npm run dev` — localhost:3000 정상 실행
+- 대시보드 라우트 200 응답
+
+### 변경 파일
+- `src/app/app/dashboard/page.tsx` (state, 함수, JSX, filter chain 수정)
+- `src/app/globals.css` (새 CSS 클래스 추가/수정)
+
+### 다음 단계
+- (Issue #7 완료)
