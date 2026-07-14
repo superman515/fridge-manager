@@ -2,14 +2,19 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useAuth } from "@/hooks/useAuth";
 import { useUserFamily } from "@/hooks/useUserFamily";
-import { getFamilyGroup } from "@/lib/firebase/family";
+import { getFamilyGroup, createFamilyGroup } from "@/lib/firebase/family";
 import type { FamilyGroup } from "@/types/familyGroup";
 
 export default function FamilyPage() {
+  const { firebaseUser } = useAuth();
   const { familyGroupId } = useUserFamily();
   const [group, setGroup] = useState<FamilyGroup | null>(null);
   const [loading, setLoading] = useState(true);
+  const [groupName, setGroupName] = useState("");
+  const [creating, setCreating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!familyGroupId) {
@@ -22,6 +27,23 @@ export default function FamilyPage() {
       setLoading(false);
     });
   }, [familyGroupId]);
+
+  const handleCreateGroup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!firebaseUser || !groupName.trim()) return;
+
+    setCreating(true);
+    setError(null);
+
+    try {
+      await createFamilyGroup(firebaseUser.uid, groupName.trim());
+      setGroupName("");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "그룹 생성에 실패했습니다");
+    } finally {
+      setCreating(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -43,9 +65,27 @@ export default function FamilyPage() {
 
         {!group ? (
           <div className="family-container">
-            <div style={{ textAlign: "center", color: "#94A3B8", marginTop: "40px" }}>
-              <p>가족 그룹이 없습니다</p>
-              <p style={{ fontSize: "12px", marginTop: "8px" }}>프로필에서 그룹을 생성해주세요</p>
+            <div className="group-card">
+              <div className="group-label">새 그룹 생성</div>
+              <form onSubmit={handleCreateGroup} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                <input
+                  type="text"
+                  placeholder="그룹명 입력 (예: 우리 가족)"
+                  value={groupName}
+                  onChange={e => setGroupName(e.target.value)}
+                  className="form-input"
+                  disabled={creating}
+                />
+                {error && <div style={{ fontSize: "12px", color: "#DC2626" }}>{error}</div>}
+                <button
+                  type="submit"
+                  className="btn-primary"
+                  disabled={!groupName.trim() || creating}
+                  style={{ width: "100%" }}
+                >
+                  {creating ? "생성 중..." : "그룹 생성"}
+                </button>
+              </form>
             </div>
           </div>
         ) : (
