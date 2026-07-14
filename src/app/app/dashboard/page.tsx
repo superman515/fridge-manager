@@ -268,10 +268,35 @@ export default function DashboardPage() {
           {filtered.map(f => {
             const status = statusFor(f.expiryDate);
             return (
-              <div key={f.id} className="food-card" onDoubleClick={() => handleEditFood(f)}>
+              <div key={f.id} className="food-card" onDoubleClick={() => handleEditFood(f)} style={{ position: "relative" }}>
+                <button
+                  onClick={(e) => { e.stopPropagation(); handleDeleteFood(f.id); }}
+                  style={{
+                    position: "absolute",
+                    top: "8px",
+                    right: "8px",
+                    width: "24px",
+                    height: "24px",
+                    background: "transparent",
+                    border: "none",
+                    cursor: "pointer",
+                    color: "#94A3B8",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: 0,
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = "#DC2626")}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = "#94A3B8")}
+                  title="소비 완료"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
                 <div className="food-card-header">
                   <span className="category-badge">{f.category}</span>
-                  <div className="status-dot" style={{ background: statusColors[status.key] }}></div>
                 </div>
                 <div className="food-name">{f.name}</div>
                 <div className="food-product">{f.product}</div>
