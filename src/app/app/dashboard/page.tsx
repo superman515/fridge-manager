@@ -11,7 +11,10 @@ import { getFamilyGroup } from "@/lib/firebase/family";
 import type { Food, FoodCategory, FoodLocation } from "@/types/food";
 import type { FamilyGroup } from "@/types/familyGroup";
 
-const TODAY = new Date(2026, 6, 8);
+const getToday = () => {
+  const now = new Date();
+  return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+};
 const memberColors: Record<string, string> = { 엄마: "#2563EB", 아빠: "#0EA5E9", 나: "#64748B" };
 const statusColors: Record<string, string> = { 경과: "#DC2626", 임박: "#F59E0B", 안전: "#16A34A" };
 const statusBgs: Record<string, string> = { 경과: "rgba(220,38,38,.10)", 임박: "rgba(245,158,11,.12)", 안전: "rgba(22,163,74,.10)" };
@@ -32,7 +35,8 @@ interface FormState {
 
 function daysUntil(expiry: string): number {
   const [y, m, d] = expiry.split("-").map(Number);
-  return Math.round((new Date(y, m - 1, d).getTime() - TODAY.getTime()) / 86400000);
+  const today = getToday();
+  return Math.round((new Date(y, m - 1, d).getTime() - today.getTime()) / 86400000);
 }
 
 function statusFor(expiry: string): { key: StatusKey; label: string } {
