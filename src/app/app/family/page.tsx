@@ -134,8 +134,12 @@ export default function FamilyPage() {
 
                 return (
                   <div key={memberId} className="member-card">
-                    <div className="member-avatar" style={{ background: avatarBg }}>
-                      {avatarChar}
+                    <div className="member-avatar" style={{ background: profile?.photoURL ? "transparent" : avatarBg, overflow: "hidden" }}>
+                      {profile?.photoURL ? (
+                        <img src={profile.photoURL} alt={profile.displayName} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                      ) : (
+                        avatarChar
+                      )}
                     </div>
                     <div className="member-info">
                       <div className="member-name-row">
