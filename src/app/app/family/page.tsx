@@ -5,7 +5,9 @@ import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserFamily } from "@/hooks/useUserFamily";
 import { getFamilyGroup, createFamilyGroup } from "@/lib/firebase/family";
+import { getUserProfile } from "@/lib/firebase/user";
 import type { FamilyGroup } from "@/types/familyGroup";
+import type { User } from "@/types/user";
 
 export default function FamilyPage() {
   const { firebaseUser } = useAuth();
@@ -15,6 +17,7 @@ export default function FamilyPage() {
   const [groupName, setGroupName] = useState("");
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [memberProfiles, setMemberProfiles] = useState<Record<string, User | null>>({});
 
   useEffect(() => {
     if (!familyGroupId) {
@@ -22,8 +25,18 @@ export default function FamilyPage() {
       return;
     }
 
-    getFamilyGroup(familyGroupId).then(g => {
+    getFamilyGroup(familyGroupId).then(async g => {
       setGroup(g);
+
+      if (g && g.members.length > 0) {
+        const profiles: Record<string, User | null> = {};
+        for (const memberId of g.members) {
+          const profile = await getUserProfile(memberId);
+          profiles[memberId] = profile;
+        }
+        setMemberProfiles(profiles);
+      }
+
       setLoading(false);
     });
   }, [familyGroupId]);
@@ -112,28 +125,38 @@ export default function FamilyPage() {
 
             <div className="section-title">구성원 {group.members.length}명</div>
             <div className="member-list">
-              {group.members.map((memberId, i) => (
-                <div key={memberId} className="member-card">
-                  <div className="member-avatar" style={{ background: i === 0 ? "#2563EB" : i === 1 ? "#0EA5E9" : "#64748B" }}>
-                    {i === 0 ? "엄" : i === 1 ? "아" : "민"}
-                  </div>
-                  <div className="member-info">
-                    <div className="member-name-row">
-                      <span className="member-name">{i === 0 ? "엄마" : i === 1 ? "아빠" : "민지 (나)"}</span>
-                      <span
-                        className="member-role"
-                        style={{
-                          color: i === 0 ? "#2563EB" : "#475569",
-                          background: i === 0 ? "rgba(37,99,235,.10)" : "#F1F5F9",
-                        }}
-                      >
-                        {i === 0 ? "관리자" : "구성원"}
-                      </span>
+              {group.members.map((memberId) => {
+                const profile = memberProfiles[memberId];
+                const isCreator = memberId === group.createdBy;
+                const avatarChar = profile?.displayName?.[0] ?? "?";
+                const avatarBg = isCreator ? "#2563EB" : "#64748B";
+                const isCurrentUser = memberId === firebaseUser?.uid;
+
+                return (
+                  <div key={memberId} className="member-card">
+                    <div className="member-avatar" style={{ background: avatarBg }}>
+                      {avatarChar}
                     </div>
-                    <div className="member-stats">가족 구성원</div>
+                    <div className="member-info">
+                      <div className="member-name-row">
+                        <span className="member-name">
+                          {profile?.displayName ?? "로딩 중..."}{isCurrentUser && " (나)"}
+                        </span>
+                        <span
+                          className="member-role"
+                          style={{
+                            color: isCreator ? "#2563EB" : "#475569",
+                            background: isCreator ? "rgba(37,99,235,.10)" : "#F1F5F9",
+                          }}
+                        >
+                          {isCreator ? "관리자" : "구성원"}
+                        </span>
+                      </div>
+                      <div className="member-stats">가족 구성원</div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             <button className="invite-btn">
