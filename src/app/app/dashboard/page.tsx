@@ -6,7 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useUserFamily } from "@/hooks/useUserFamily";
 import { useFoodList } from "@/hooks/useFoodList";
 import { useUserProfile } from "@/hooks/useUserProfile";
-import { addFood, deleteFood } from "@/lib/firebase/food";
+import { addFood, deleteFood, updateFood } from "@/lib/firebase/food";
 import { getFamilyGroup } from "@/lib/firebase/family";
 import type { Food, FoodCategory, FoodLocation } from "@/types/food";
 import type { FamilyGroup } from "@/types/familyGroup";
@@ -82,6 +82,7 @@ export default function DashboardPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortKey>("expiry");
   const [showModal, setShowModal] = useState(false);
+  const [editingFoodId, setEditingFoodId] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>({
     name: "",
     product: "",
@@ -111,14 +112,20 @@ export default function DashboardPage() {
     if (!form.name.trim() || !firebaseUser?.uid || !familyGroupId) return;
 
     try {
-      await addFood(familyGroupId, firebaseUser.uid, {
+      const foodData = {
         name: form.name.trim(),
         product: form.product.trim() || "직접 등록",
         category: form.category as any,
         location: form.location,
         quantity: form.quantity.trim() || "1개",
         expiryDate: form.expiryDate,
-      });
+      };
+
+      if (editingFoodId) {
+        await updateFood(editingFoodId, foodData);
+      } else {
+        await addFood(familyGroupId, firebaseUser.uid, foodData);
+      }
 
       setForm({
         name: "",
@@ -128,10 +135,24 @@ export default function DashboardPage() {
         quantity: "",
         expiryDate: "2026-07-15",
       });
+      setEditingFoodId(null);
       setShowModal(false);
     } catch (err) {
-      console.error("음식 추가 실패:", err);
+      console.error("음식 저장 실패:", err);
     }
+  };
+
+  const handleEditFood = (food: Food) => {
+    setForm({
+      name: food.name,
+      product: food.product,
+      category: food.category,
+      location: food.location,
+      quantity: food.quantity,
+      expiryDate: food.expiryDate,
+    });
+    setEditingFoodId(food.id);
+    setShowModal(true);
   };
 
   const handleDeleteFood = async (foodId: string) => {
@@ -247,7 +268,7 @@ export default function DashboardPage() {
           {filtered.map(f => {
             const status = statusFor(f.expiryDate);
             return (
-              <div key={f.id} className="food-card">
+              <div key={f.id} className="food-card" onDoubleClick={() => handleEditFood(f)}>
                 <div className="food-card-header">
                   <span className="category-badge">{f.category}</span>
                   <div className="status-dot" style={{ background: statusColors[status.key] }}></div>
@@ -333,10 +354,10 @@ export default function DashboardPage() {
 
       {showModal && (
         <div className="modal-overlay">
-          <div className="modal-bg" onClick={() => setShowModal(false)}></div>
+          <div className="modal-bg" onClick={() => { setShowModal(false); setEditingFoodId(null); }}></div>
           <div className="modal-sheet">
             <div className="modal-handle"></div>
-            <div className="modal-title">음식 추가</div>
+            <div className="modal-title">{editingFoodId ? "음식 수정" : "음식 추가"}</div>
 
             <div className="form-group">
               <label className="form-label">이름</label>
@@ -410,7 +431,7 @@ export default function DashboardPage() {
             </div>
 
             <div className="form-actions">
-              <button className="btn-secondary" onClick={() => setShowModal(false)}>
+              <button className="btn-secondary" onClick={() => { setShowModal(false); setEditingFoodId(null); }}>
                 취소
               </button>
               <button
@@ -418,7 +439,7 @@ export default function DashboardPage() {
                 disabled={!form.name.trim()}
                 onClick={handleSubmitFood}
               >
-                추가하기
+                {editingFoodId ? "수정하기" : "추가하기"}
               </button>
             </div>
           </div>

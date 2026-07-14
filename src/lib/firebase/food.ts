@@ -1,4 +1,4 @@
-import { collection, addDoc, deleteDoc, doc, serverTimestamp, query, where, getDocs, onSnapshot } from "firebase/firestore";
+import { collection, addDoc, deleteDoc, doc, serverTimestamp, query, where, getDocs, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase/client";
 import type { Food } from "@/types/food";
 
@@ -25,6 +25,14 @@ export async function getFoodList(groupId: string): Promise<Food[]> {
     id: doc.id,
     ...doc.data(),
   } as Food));
+}
+
+export async function updateFood(
+  foodId: string,
+  data: Partial<Omit<Food, "id" | "familyGroupId" | "addedBy" | "addedAt">>
+): Promise<void> {
+  const ref = doc(db, "foods", foodId);
+  await updateDoc(ref, data);
 }
 
 export async function deleteFood(foodId: string): Promise<void> {
