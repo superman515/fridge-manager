@@ -8,8 +8,10 @@ import { useFoodList } from "@/hooks/useFoodList";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { addFood, deleteFood, updateFood } from "@/lib/firebase/food";
 import { getFamilyGroup } from "@/lib/firebase/family";
+import { getUserProfile } from "@/lib/firebase/user";
 import type { Food, FoodCategory, FoodLocation } from "@/types/food";
 import type { FamilyGroup } from "@/types/familyGroup";
+import type { User } from "@/types/user";
 
 const getToday = () => {
   const now = new Date();
@@ -83,6 +85,7 @@ export default function DashboardPage() {
   const [sortBy, setSortBy] = useState<SortKey>("expiry");
   const [showModal, setShowModal] = useState(false);
   const [editingFoodId, setEditingFoodId] = useState<string | null>(null);
+  const [addedByProfiles, setAddedByProfiles] = useState<Record<string, User | null>>({});
   const [form, setForm] = useState<FormState>({
     name: "",
     product: "",
@@ -96,6 +99,26 @@ export default function DashboardPage() {
     if (!familyGroupId) return;
     getFamilyGroup(familyGroupId).then(g => setGroup(g));
   }, [familyGroupId]);
+
+  useEffect(() => {
+    if (foods.length === 0) return;
+
+    const uniqueAddedByIds = Array.from(new Set(foods.map(f => f.addedBy)));
+    const loadProfiles = async () => {
+      const profiles: Record<string, User | null> = {};
+      for (const uid of uniqueAddedByIds) {
+        if (!addedByProfiles[uid]) {
+          const profile = await getUserProfile(uid);
+          profiles[uid] = profile;
+        }
+      }
+      if (Object.keys(profiles).length > 0) {
+        setAddedByProfiles(prev => ({ ...prev, ...profiles }));
+      }
+    };
+
+    loadProfiles();
+  }, [foods, addedByProfiles]);
 
   const filtered = foods
     .filter(f =>
@@ -318,6 +341,9 @@ export default function DashboardPage() {
                       <line x1="16" y1="3" x2="16" y2="6"></line>
                     </svg>
                     <span>소비기한 {mdOf(f.expiryDate)}</span>
+                  </div>
+                  <div style={{ fontSize: "12px", color: "#64748B" }}>
+                    등록: {addedByProfiles[f.addedBy]?.displayName ?? "로딩 중..."}
                   </div>
                 </div>
               </div>
