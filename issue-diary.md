@@ -308,3 +308,44 @@
 
 ### 다음 단계
 - (Issue #7 완료)
+
+---
+
+## Issue #8 — Family Group Creation
+**날짜:** 2026-07-14
+
+### 구현 내용
+그룹 생성 폼 UI 추가 및 멤버 목록 바인딩.
+
+- 그룹 생성 폼 (`src/app/app/family/page.tsx`)
+  - 그룹 없을 때 그룹명 입력 필드 + "그룹 생성" 버튼
+  - handleCreateGroup: createFamilyGroup() 호출, 성공 후 입력 필드 초기화
+  - 에러 메시지 표시
+
+- 멤버 목록 바인딩
+  - getUserProfile(uid) 함수 추가 (`src/lib/firebase/user.ts`)
+  - group 로드 후 모든 members의 프로필 조회 (displayName, photoURL 등)
+  - 멤버 카드: 실제 displayName으로 아바타 생성 (첫 글자)
+  - 생성자(createdBy) vs 구성원 구분 — 아이콘/색상 다르게 표시
+  - 현재 사용자에 "(나)" 라벨 추가
+
+### Acceptance Criteria 달성
+- ✅ 그룹 생성 폼 제출 시 Firestore에 저장됨
+- ✅ 고유한 초대 코드 자동 생성 (이미 구현됨)
+- ✅ 초대 코드 UI에 표시됨 (이미 구현됨)
+- ✅ 초대 코드 복사 버튼 작동 (이미 구현됨)
+- ✅ 생성자의 familyGroupId 자동으로 설정됨 (이미 구현됨)
+- ✅ 생성자가 자동으로 members 배열에 추가됨 (이미 구현됨)
+
+### 검증 완료
+- `npm run build` — 타입 에러 없음
+- `npm run dev` — localhost:3000 정상 실행
+- `/app/family` 라우트 200 응답
+
+### 변경 파일
+- `src/app/app/family/page.tsx` (그룹 생성 폼, 멤버 리스트 바인딩)
+- `src/lib/firebase/user.ts` (새 파일 — getUserProfile)
+
+### 다음 단계
+- Issue #8 완료
+- (향후) 초대 코드로 그룹 참여 기능 (Issue #9?)
