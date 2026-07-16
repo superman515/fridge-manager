@@ -17,6 +17,14 @@ const getToday = () => {
   const now = new Date();
   return new Date(now.getFullYear(), now.getMonth(), now.getDate());
 };
+
+function formatDateLocal(date: Date): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
 const memberColors: Record<string, string> = { 엄마: "#2563EB", 아빠: "#0EA5E9", 나: "#64748B" };
 const statusColors: Record<string, string> = { 경과: "#DC2626", 임박: "#F59E0B", 안전: "#16A34A" };
 const statusBgs: Record<string, string> = { 경과: "rgba(220,38,38,.10)", 임박: "rgba(245,158,11,.12)", 안전: "rgba(22,163,74,.10)" };
@@ -92,7 +100,7 @@ export default function DashboardPage() {
     category: "채소",
     location: "냉장",
     quantity: "",
-    expiryDate: "2026-07-15",
+    expiryDate: formatDateLocal(getToday()),
   });
 
   useEffect(() => {
@@ -156,7 +164,7 @@ export default function DashboardPage() {
         category: "채소",
         location: "냉장",
         quantity: "",
-        expiryDate: "2026-07-15",
+        expiryDate: formatDateLocal(getToday()),
       });
       setEditingFoodId(null);
       setShowModal(false);
