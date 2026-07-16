@@ -347,5 +347,78 @@
 - `src/lib/firebase/user.ts` (새 파일 — getUserProfile)
 
 ### 다음 단계
-- Issue #8 완료
-- (향후) 초대 코드로 그룹 참여 기능 (Issue #9?)
+- (Issue #8 완료)
+
+---
+
+## Issue #9 — Family Group Invitation & Membership
+**날짜:** 2026-01-17 (최종 수정: 2026-01-17)
+
+### 구현 내용
+초대 코드로 기존 가족 그룹에 참여하는 기능 완성.
+
+#### 1단계: 탭 UI & 기본 로직
+- Family 페이지 재설계 (`src/app/app/family/page.tsx`)
+  - 그룹 없을 때: "생성 / 참여" 탭 UI
+  - 참여 탭: 초대 코드 입력 폼 (XXX-XXXX 포맷)
+  - handleJoinGroup: 클라이언트 포맷 검증 + Firestore 조회 + 멤버 추가
+
+- Firebase 함수 (`src/lib/firebase/family.ts`)
+  - `findFamilyGroupByInviteCode(code)`: Firestore 쿼리로 inviteCode 검색 (초기 구현)
+  - `addMemberToGroup(groupId, uid)`: members 배열에 arrayUnion으로 사용자 추가
+
+- Firestore rules 업데이트
+  - `familyGroups` update 규칙: 생성자 또는 members 배열 크기 증가 시 허용
+  - `users/{uid}` 규칙: 사용자 자신만 read/write 가능
+
+#### 2단계: 보안 규칙 충돌 해결 (2026-01-17 수정)
+**문제:** Firestore 쿼리는 "쿼리 자체가 항상 규칙을 만족하는지"로 검증하므로, `familyGroups` 읽기 규칙 (`uid in members`)에 inviteCode 조건이 없으면 비멤버의 쿼리가 항상 거부됨 → `findFamilyGroupByInviteCode`가 실패.
+
+**해결책:** 얇은 인덱스 컬렉션 `invites/{inviteCode}` 추가
+- invites 컬렉션: 로그인 사용자 누구나 `getDoc`(쿼리 아님)으로 읽기 가능, `{ groupId }` 만 저장
+- familyGroups 컬렉션: 기존 규칙 유지 (멤버만 읽기)
+- 함수 변경: `findFamilyGroupByInviteCode` → `resolveInviteCode` (쿼리 제거, getDoc 사용)
+
+- Firestore rules (`firestore.rules`)
+  - invites 규칙 추가: read 허용 (로그인 사용자), create 허용 (그룹 생성자만), update/delete 불가
+  - familyGroups 규칙 기존 유지
+
+- Firebase 함수 재구현 (`src/lib/firebase/family.ts`)
+  - `createFamilyGroup`: 그룹 생성 시 `invites/{inviteCode}` 문서도 생성 (`{ groupId }`)
+  - `resolveInviteCode(code)`: `getDoc(doc(db, "invites", code))` → groupId 반환
+  - `addMemberToGroup`: 변경 없음 (update 규칙이 이미 멤버 추가 조건 포함)
+
+- Family 페이지 업데이트 (`src/app/app/family/page.tsx`)
+  - import: `findFamilyGroupByInviteCode` → `resolveInviteCode`
+  - handleJoinGroup: 조회만 하고 groupId 문자열 받음, 멤버 중복 체크 제거 (update 실패로 판별)
+
+### Acceptance Criteria 달성
+- ✅ 초대 코드 입력 폼이 유효성 검사 수행 (포맷)
+- ✅ 유효한 코드 입력 시 그룹 조회 성공 (invites 컬렉션 경유)
+- ✅ 멤버 배열에 현재 사용자 uid 추가됨 (arrayUnion)
+- ✅ 사용자의 familyGroupId 업데이트됨 (users/{uid} 문서)
+- ✅ 그룹 참여 후 해당 그룹의 음식 목록 조회됨 (useUserFamily 자동 갱신)
+- ✅ 잘못된 코드 입력 시 에러 메시지 표시 (3가지: 형식 오류, 코드 미존재, 이미 가입)
+
+### 검증 완료
+- `npm run build` — 타입 에러 없음
+- `npm run dev` — localhost:3000 정상 실행
+- 새 그룹 생성 시 invites 문서 자동 생성됨
+- User B가 초대 코드로 그룹 참여 성공
+- 중복 참여 시도 → "이미 가입된 그룹이거나 참여할 수 없습니다" 메시지
+
+### 변경 파일
+- `firestore.rules` (invites 컬렉션 규칙 추가)
+- `src/lib/firebase/family.ts` (createFamilyGroup 업데이트, findFamilyGroupByInviteCode 제거, resolveInviteCode 추가)
+- `src/app/app/family/page.tsx` (import 변경, handleJoinGroup 간소화)
+
+### 알려진 문제 (향후 이슈)
+- Family 페이지에서 그룹 멤버의 프로필(displayName, photoURL) 로드 시 권한 거부 발생
+  - 원인: `users/{uid}` read 규칙이 사용자 자신만 허용, 다른 멤버 프로필 조회 불가
+  - 영향: 멤버 목록에 "로딩 중..." 표시 후 멈춤
+  - 해결: 별도 이슈로 추적 (users 규칙 또는 프로필 캐싱 방식 결정 필요)
+
+### 다음 단계
+- (Issue #9 완료)
+- 새 이슈: 멤버 프로필 읽기 권한 문제
+- 향후 기능: 그룹 관리 (멤버 삭제, 그룹명 변경 등)

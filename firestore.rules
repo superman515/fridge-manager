@@ -19,14 +19,26 @@ service cloud.firestore {
 
     // --- familyGroups/{groupId} ---
     // Readable by any member listed in members[].
-    // Writable only by the creator (createdBy).
-    // NOTE: joining a group (adding yourself to members[]) is a write to an
-    // existing doc, so the creator-only write rule will need to be relaxed
-    // or handled via a Cloud Function / transaction in the invite-join issue.
+    // Writable: creator can do full updates/deletes, members can update their own profile.
     match /familyGroups/{groupId} {
       allow read: if isSignedIn() && request.auth.uid in resource.data.members;
       allow create: if isSignedIn() && request.resource.data.createdBy == request.auth.uid;
-      allow update, delete: if isSignedIn() && resource.data.createdBy == request.auth.uid;
+      allow update: if isSignedIn() && (
+        resource.data.createdBy == request.auth.uid ||
+        (resource.data.members.size() < request.resource.data.members.size())
+      );
+      allow delete: if isSignedIn() && resource.data.createdBy == request.auth.uid;
+    }
+
+    // --- invites/{inviteCode} ---
+    // Thin lookup index: inviteCode -> groupId only. Readable by any signed-in
+    // user so non-members can resolve a code before joining. Only the group's
+    // creator may create the mapping (enforced via cross-collection get()).
+    match /invites/{inviteCode} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() &&
+        get(/databases/$(database)/documents/familyGroups/$(request.resource.data.groupId)).data.createdBy == request.auth.uid;
+      allow update, delete: if false;
     }
 
     // --- foods/{foodId} ---

@@ -1,4 +1,4 @@
-import { collection, doc, getDoc, setDoc, serverTimestamp, updateDoc } from "firebase/firestore";
+import { collection, doc, getDoc, setDoc, serverTimestamp, updateDoc, where, query, getDocs, arrayUnion } from "firebase/firestore";
 import { db } from "@/lib/firebase/client";
 import type { FamilyGroup } from "@/types/familyGroup";
 import { updateUserProfile } from "@/lib/firebase/auth";
@@ -31,6 +31,12 @@ export async function createFamilyGroup(uid: string, groupName: string): Promise
   };
 
   await setDoc(doc(db, "familyGroups", groupId), groupData);
+
+  // Create invite mapping for non-members to resolve the code
+  await setDoc(doc(db, "invites", inviteCode.toUpperCase()), {
+    groupId,
+  });
+
   await updateDoc(doc(db, "users", uid), { familyGroupId: groupId });
 
   return groupData;
@@ -44,4 +50,41 @@ export async function getFamilyGroup(groupId: string): Promise<FamilyGroup | nul
     id: snapshot.id,
     ...snapshot.data(),
   } as FamilyGroup;
+}
+
+export async function resolveInviteCode(code: string): Promise<string | null> {
+  const ref = doc(db, "invites", code.toUpperCase());
+  const snapshot = await getDoc(ref);
+
+  if (!snapshot.exists()) return null;
+
+  return (snapshot.data() as { groupId: string }).groupId;
+}
+
+export async function addMemberToGroup(groupId: string, uid: string): Promise<void> {
+  const groupRef = doc(db, "familyGroups", groupId);
+
+  try {
+    // Add uid to members array (if not already present)
+    console.log("Step 1: Adding uid to members array", { groupId, uid });
+    await updateDoc(groupRef, {
+      members: arrayUnion(uid),
+    });
+    console.log("Step 1: Success - uid added to members");
+  } catch (err) {
+    console.error("Step 1 failed:", err);
+    throw err;
+  }
+
+  try {
+    // Update user doc with familyGroupId
+    console.log("Step 2: Updating user doc with familyGroupId", { uid, groupId });
+    await updateDoc(doc(db, "users", uid), {
+      familyGroupId: groupId,
+    });
+    console.log("Step 2: Success - user doc updated");
+  } catch (err) {
+    console.error("Step 2 failed:", err);
+    throw err;
+  }
 }

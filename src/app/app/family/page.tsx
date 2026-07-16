@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserFamily } from "@/hooks/useUserFamily";
-import { getFamilyGroup, createFamilyGroup } from "@/lib/firebase/family";
+import { getFamilyGroup, createFamilyGroup, resolveInviteCode, addMemberToGroup } from "@/lib/firebase/family";
 import { getUserProfile } from "@/lib/firebase/user";
 import type { FamilyGroup } from "@/types/familyGroup";
 import type { User } from "@/types/user";
@@ -18,6 +18,10 @@ export default function FamilyPage() {
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [memberProfiles, setMemberProfiles] = useState<Record<string, User | null>>({});
+  const [activeTab, setActiveTab] = useState<"create" | "join">("create");
+  const [inviteCode, setInviteCode] = useState("");
+  const [joining, setJoining] = useState(false);
+  const [joinError, setJoinError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!familyGroupId) {
@@ -58,6 +62,44 @@ export default function FamilyPage() {
     }
   };
 
+  const handleJoinGroup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!firebaseUser || !inviteCode.trim()) return;
+
+    setJoining(true);
+    setJoinError(null);
+
+    try {
+      const code = inviteCode.trim().toUpperCase();
+
+      // Validate format (XXX-XXXX)
+      if (!/^[A-Z0-9]{3}-[A-Z0-9]{4}$/.test(code)) {
+        setJoinError("코드 형식이 올바르지 않습니다");
+        setJoining(false);
+        return;
+      }
+
+      // Resolve invite code to groupId
+      const groupId = await resolveInviteCode(code);
+      if (!groupId) {
+        setJoinError("코드를 확인하세요");
+        setJoining(false);
+        return;
+      }
+
+      // Add user to group
+      await addMemberToGroup(groupId, firebaseUser.uid);
+      setInviteCode("");
+
+      // Page will auto-refresh via useUserFamily hook
+    } catch (err) {
+      console.error("Join group error:", err);
+      setJoinError("이미 가입된 그룹이거나 참여할 수 없습니다");
+    } finally {
+      setJoining(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="phone">
@@ -78,28 +120,100 @@ export default function FamilyPage() {
 
         {!group ? (
           <div className="family-container">
-            <div className="group-card">
-              <div className="group-label">새 그룹 생성</div>
-              <form onSubmit={handleCreateGroup} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                <input
-                  type="text"
-                  placeholder="그룹명 입력 (예: 우리 가족)"
-                  value={groupName}
-                  onChange={e => setGroupName(e.target.value)}
-                  className="form-input"
-                  disabled={creating}
-                />
-                {error && <div style={{ fontSize: "12px", color: "#DC2626" }}>{error}</div>}
-                <button
-                  type="submit"
-                  className="btn-primary"
-                  disabled={!groupName.trim() || creating}
-                  style={{ width: "100%" }}
-                >
-                  {creating ? "생성 중..." : "그룹 생성"}
-                </button>
-              </form>
+            {/* Tab Navigation */}
+            <div style={{ display: "flex", gap: "8px", marginBottom: "16px", borderBottom: "1px solid #E2E8F0" }}>
+              <button
+                onClick={() => {
+                  setActiveTab("create");
+                  setJoinError(null);
+                }}
+                style={{
+                  flex: 1,
+                  padding: "12px 0",
+                  border: "none",
+                  background: "transparent",
+                  cursor: "pointer",
+                  borderBottom: activeTab === "create" ? "2px solid #2563EB" : "none",
+                  color: activeTab === "create" ? "#2563EB" : "#64748B",
+                  fontWeight: activeTab === "create" ? "600" : "400",
+                  fontSize: "14px",
+                }}
+              >
+                생성
+              </button>
+              <button
+                onClick={() => {
+                  setActiveTab("join");
+                  setJoinError(null);
+                }}
+                style={{
+                  flex: 1,
+                  padding: "12px 0",
+                  border: "none",
+                  background: "transparent",
+                  cursor: "pointer",
+                  borderBottom: activeTab === "join" ? "2px solid #2563EB" : "none",
+                  color: activeTab === "join" ? "#2563EB" : "#64748B",
+                  fontWeight: activeTab === "join" ? "600" : "400",
+                  fontSize: "14px",
+                }}
+              >
+                참여
+              </button>
             </div>
+
+            {/* Create Tab */}
+            {activeTab === "create" && (
+              <div className="group-card">
+                <div className="group-label">새 그룹 생성</div>
+                <form onSubmit={handleCreateGroup} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                  <input
+                    type="text"
+                    placeholder="그룹명 입력 (예: 우리 가족)"
+                    value={groupName}
+                    onChange={e => setGroupName(e.target.value)}
+                    className="form-input"
+                    disabled={creating}
+                  />
+                  {error && <div style={{ fontSize: "12px", color: "#DC2626" }}>{error}</div>}
+                  <button
+                    type="submit"
+                    className="btn-primary"
+                    disabled={!groupName.trim() || creating}
+                    style={{ width: "100%" }}
+                  >
+                    {creating ? "생성 중..." : "그룹 생성"}
+                  </button>
+                </form>
+              </div>
+            )}
+
+            {/* Join Tab */}
+            {activeTab === "join" && (
+              <div className="group-card">
+                <div className="group-label">초대 코드 입력</div>
+                <form onSubmit={handleJoinGroup} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                  <input
+                    type="text"
+                    placeholder="초대 코드 (예: ABC-1234)"
+                    value={inviteCode}
+                    onChange={e => setInviteCode(e.target.value.toUpperCase())}
+                    className="form-input"
+                    disabled={joining}
+                    maxLength={8}
+                  />
+                  {joinError && <div style={{ fontSize: "12px", color: "#DC2626" }}>{joinError}</div>}
+                  <button
+                    type="submit"
+                    className="btn-primary"
+                    disabled={!inviteCode.trim() || joining}
+                    style={{ width: "100%" }}
+                  >
+                    {joining ? "참여 중..." : "그룹 참여"}
+                  </button>
+                </form>
+              </div>
+            )}
           </div>
         ) : (
           <div className="family-container">
