@@ -94,6 +94,7 @@ export default function DashboardPage() {
   const [showModal, setShowModal] = useState(false);
   const [editingFoodId, setEditingFoodId] = useState<string | null>(null);
   const [addedByProfiles, setAddedByProfiles] = useState<Record<string, User | null>>({});
+  const [memberProfiles, setMemberProfiles] = useState<Record<string, User | null>>({});
   const [form, setForm] = useState<FormState>({
     name: "",
     product: "",
@@ -105,7 +106,17 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (!familyGroupId) return;
-    getFamilyGroup(familyGroupId).then(g => setGroup(g));
+    getFamilyGroup(familyGroupId).then(async g => {
+      setGroup(g);
+      if (g && g.members.length > 0) {
+        const profiles: Record<string, User | null> = {};
+        for (const memberId of g.members.slice(0, 3)) {
+          const profile = await getUserProfile(memberId);
+          profiles[memberId] = profile;
+        }
+        setMemberProfiles(profiles);
+      }
+    });
   }, [familyGroupId]);
 
   useEffect(() => {
@@ -206,10 +217,23 @@ export default function DashboardPage() {
             </div>
             <div className="avatar-group">
               {group?.members.slice(0, 3).map((memberId, i) => {
-                const colors = [memberColors["엄마"], memberColors["아빠"], memberColors["나"]];
+                const profile = memberProfiles[memberId];
+                const avatarChar = profile?.displayName?.[0] ?? "?";
+                const avatarBg = i === 0 ? memberColors["엄마"] : i === 1 ? memberColors["아빠"] : memberColors["나"];
                 return (
-                  <div key={i} className="avatar" style={{ background: colors[i % 3] }}>
-                    {i === 0 ? "엄" : i === 1 ? "아" : "민"}
+                  <div
+                    key={memberId}
+                    className="avatar"
+                    style={{
+                      background: profile?.photoURL ? "transparent" : avatarBg,
+                      overflow: "hidden",
+                    }}
+                  >
+                    {profile?.photoURL ? (
+                      <img src={profile.photoURL} alt={profile.displayName} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                    ) : (
+                      avatarChar
+                    )}
                   </div>
                 );
               })}
