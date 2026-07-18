@@ -28,7 +28,6 @@ export default function FamilyPage() {
   const [isEditingName, setIsEditingName] = useState(false);
   const [editedName, setEditedName] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
-  const [notifMessage, setNotifMessage] = useState<string | null>(null);
 
   const memberIdsKey = (group?.members ?? []).join(",");
 
@@ -142,21 +141,6 @@ export default function FamilyPage() {
       console.error("Failed to delete group:", err);
       alert("그룹 삭제 실패: " + (err instanceof Error ? err.message : ""));
       setIsDeleting(false);
-    }
-  };
-
-  const handleShareInviteLink = async () => {
-    if (!group) return;
-    const inviteLink = `${typeof window !== "undefined" ? window.location.origin : ""}/app/family?invite=${group.inviteCode}`;
-
-    try {
-      await navigator.clipboard.writeText(inviteLink);
-      setNotifMessage("초대 링크가 복사되었습니다");
-      setTimeout(() => setNotifMessage(null), 2000);
-    } catch (err) {
-      console.error("Copy failed:", err);
-      setNotifMessage("복사 실패");
-      setTimeout(() => setNotifMessage(null), 2000);
     }
   };
 
@@ -326,26 +310,6 @@ export default function FamilyPage() {
                       <polyline points="20 6 9 17 4 12"></polyline>
                     </svg>
                   </button>
-                  <button
-                    onClick={() => setIsEditingName(false)}
-                    style={{
-                      padding: "6px 8px",
-                      backgroundColor: "#DC2626",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "4px",
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                    title="취소"
-                  >
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                      <line x1="18" y1="6" x2="6" y2="18"></line>
-                      <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                  </button>
                 </div>
               ) : (
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "12px" }}>
@@ -464,14 +428,6 @@ export default function FamilyPage() {
               })}
             </div>
 
-            <button className="invite-btn" onClick={handleShareInviteLink}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-                <line x1="12" y1="5" x2="12" y2="19"></line>
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-              </svg>
-              가족 초대하기
-            </button>
-
             {firebaseUser?.uid === group.createdBy && (
               <button
                 onClick={handleDeleteGroup}
@@ -494,24 +450,6 @@ export default function FamilyPage() {
           </div>
         )}
       </div>
-
-      {notifMessage && (
-        <div style={{
-          position: "fixed",
-          top: "20px",
-          left: "50%",
-          transform: "translateX(-50%)",
-          backgroundColor: "#2563EB",
-          color: "white",
-          padding: "12px 20px",
-          borderRadius: "8px",
-          fontSize: "14px",
-          zIndex: 1000,
-          boxShadow: "0 2px 8px rgba(0,0,0,0.15)"
-        }}>
-          {notifMessage}
-        </div>
-      )}
 
       <div className="tabbar">
         <Link href="/app/dashboard" className="tab-button">
