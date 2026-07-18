@@ -259,7 +259,7 @@ export default function FamilyPage() {
             <div className="group-card">
               <div className="group-label">우리 그룹</div>
               {isEditingName ? (
-                <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
+                <div style={{ display: "flex", gap: "6px", marginBottom: "12px", alignItems: "center" }}>
                   <input
                     type="text"
                     value={editedName}
@@ -278,30 +278,41 @@ export default function FamilyPage() {
                   <button
                     onClick={handleUpdateGroupName}
                     style={{
-                      padding: "8px 12px",
+                      padding: "6px 8px",
                       backgroundColor: "#3B82F6",
                       color: "white",
                       border: "none",
                       borderRadius: "4px",
                       cursor: "pointer",
-                      fontSize: "12px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                     }}
+                    title="저장"
                   >
-                    저장
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
                   </button>
                   <button
                     onClick={() => setIsEditingName(false)}
                     style={{
-                      padding: "8px 12px",
-                      backgroundColor: "#D1D5DB",
-                      color: "#111827",
+                      padding: "6px 8px",
+                      backgroundColor: "#DC2626",
+                      color: "white",
                       border: "none",
                       borderRadius: "4px",
                       cursor: "pointer",
-                      fontSize: "12px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                     }}
+                    title="취소"
                   >
-                    취소
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
                   </button>
                 </div>
               ) : (
