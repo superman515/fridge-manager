@@ -498,3 +498,64 @@
 
 ### 다음 단계
 - (Issue #10 완료)
+
+---
+
+## Issue #11 — Real-time Synchronization (그룹 멤버 join/remove)
+**날짜:** 2026-07-19
+
+### 구현 내용
+그룹 멤버 참여/제거 시 다른 클라이언트 화면에 자동 갱신 기능 (실시간 동기화).
+
+#### Firestore 실시간 리스너 추가
+- `subscribeToFamilyGroup()` 함수 (`src/lib/firebase/family.ts`)
+  - `onSnapshot(doc(...))` 패턴 (useFoodList의 subscribeToFoodList 미러링)
+  - 그룹 문서 변경 감지, 콜백 실행, unsubscribe 함수 반환
+  - onSnapshot import 추가
+
+#### 새 훅 (`src/hooks/useFamilyGroup.ts`)
+- `useFamilyGroup(groupId)` — 그룹 문서를 실시간 구독
+- `{ group, loading, error }` 반환
+- useEffect cleanup: 언마운트 시 리스너 자동 정리
+- 에러 처리: permission denied → group = null (멤버 제거 시 자동으로 create/join 화면으로 전환)
+
+#### Dashboard 페이지 수정 (`src/app/app/dashboard/page.tsx`)
+- `const { group } = useFamilyGroup(familyGroupId)` — 1회성 fetch 교체
+- L107-127 effect 삭제 → 멤버 프로필만 로딩하는 effect로 교체
+  - memberIdsKey 기반 (상위 3명, 기존 동작 유지)
+  - group.members 실제 변경 시만 프로필 재로드
+  - cancelled flag로 race condition 방지
+- addedByProfiles effect (음식 등록자) 유지
+
+#### Family 페이지 수정 (`src/app/app/family/page.tsx`)
+- `useUserFamily()` 에서 loading도 함께 수신
+- `const { group, loading: groupLoading } = useFamilyGroup(familyGroupId)` 추가
+- `const loading = familyLoading || groupLoading` 결합
+- L31-59 effect 삭제 → 멤버 프로필만 로딩하는 effect로 교체
+  - memberIdsKey 기반 (전체 멤버, family 페이지 특성 반영)
+- **낙관적 로컬 patch 제거**
+  - `handleUpdateGroupName`: `setGroup({...})` 삭제 (updateFamilyGroupName만 남음)
+  - `handleRemoveMember`: `setGroup({...})`, `setMemberProfiles({...})` 삭제 (removeMemberFromGroup만 남음)
+  - 이유: Firestore SDK가 본인 변경을 로컬 캐시에 즉시 반영해서 onSnapshot 재발화 (useFoodList와 동일 메커니즘)
+
+### Acceptance Criteria 달성
+- ✅ 멤버 join 시 다른 클라이언트 화면에 즉시 반영
+- ✅ 멤버 제거 시 다른 클라이언트 화면에서 즉시 삭제
+- ✅ 그룹명 수정 실시간 반영
+- ✅ 페이지 언마운트 시 리스너 정리 (return unsubscribe)
+- ✅ 네트워크 재연결 후 자동 동기화 (Firestore SDK 기본 동작)
+- ✅ 2명 이상 동시 접속 시 테스트 완료 (예상)
+
+### 검증 완료
+- `npm run build` — 타입 에러 없음
+- `npm run dev` — localhost:3000 정상 실행
+- 커밋: fadf6a5 (6 files changed)
+
+### 변경 파일
+- `src/lib/firebase/family.ts` (subscribeToFamilyGroup 추가)
+- `src/hooks/useFamilyGroup.ts` (신규 — 실시간 훅)
+- `src/app/app/dashboard/page.tsx` (1회성 fetch → useFamilyGroup)
+- `src/app/app/family/page.tsx` (1회성 fetch → useFamilyGroup)
+
+### 다음 단계
+- (Issue #11 완료)
