@@ -23,9 +23,15 @@ export default function ProfilePage() {
   const [error, setError] = useState<string | null>(null);
   const [notifState, setNotifState] = useState({ expiry: true, today: true, shared: false });
 
+  const getToday = () => {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  };
+
   const statusFor = (expiryDate: string) => {
     const [y, m, d] = expiryDate.split("-").map(Number);
-    const days = Math.round((new Date(y, m - 1, d).getTime() - new Date(2026, 6, 8).getTime()) / 86400000);
+    const today = getToday();
+    const days = Math.round((new Date(y, m - 1, d).getTime() - today.getTime()) / 86400000);
     if (days < 0) return { key: "경과", label: `${-days}일 지남` };
     if (days <= 3) return { key: "임박", label: days === 0 ? "오늘까지" : `${days}일 남음` };
     return { key: "안전", label: `${days}일 남음` };
