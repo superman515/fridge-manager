@@ -374,7 +374,7 @@ export default function FamilyPage() {
                 return (
                   <div key={memberId} style={{
                     position: "relative",
-                    marginBottom: "8px",
+                    marginBottom: "10px",
                   }}>
                     <div className="member-card">
                       <div className="member-avatar" style={{ background: profile?.photoURL ? "transparent" : avatarBg, overflow: "hidden" }}>
