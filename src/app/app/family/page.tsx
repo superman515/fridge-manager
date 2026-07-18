@@ -28,6 +28,7 @@ export default function FamilyPage() {
   const [isEditingName, setIsEditingName] = useState(false);
   const [editedName, setEditedName] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
+  const [notifMessage, setNotifMessage] = useState<string | null>(null);
 
   const memberIdsKey = (group?.members ?? []).join(",");
 
@@ -143,6 +144,32 @@ export default function FamilyPage() {
       setIsDeleting(false);
     }
   };
+
+  const handleShareInviteLink = async () => {
+    if (!group) return;
+    const inviteLink = `${typeof window !== "undefined" ? window.location.origin : ""}/app/family?invite=${group.inviteCode}`;
+
+    try {
+      await navigator.clipboard.writeText(inviteLink);
+      setNotifMessage("초대 링크가 복사되었습니다");
+      setTimeout(() => setNotifMessage(null), 2000);
+    } catch (err) {
+      console.error("Copy failed:", err);
+      setNotifMessage("복사 실패");
+      setTimeout(() => setNotifMessage(null), 2000);
+    }
+  };
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get("invite");
+      if (code) {
+        setInviteCode(code.toUpperCase());
+        setActiveTab("join");
+      }
+    }
+  }, []);
 
   if (loading) {
     return (
@@ -437,7 +464,7 @@ export default function FamilyPage() {
               })}
             </div>
 
-            <button className="invite-btn">
+            <button className="invite-btn" onClick={handleShareInviteLink}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                 <line x1="12" y1="5" x2="12" y2="19"></line>
                 <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -467,6 +494,24 @@ export default function FamilyPage() {
           </div>
         )}
       </div>
+
+      {notifMessage && (
+        <div style={{
+          position: "fixed",
+          top: "20px",
+          left: "50%",
+          transform: "translateX(-50%)",
+          backgroundColor: "#2563EB",
+          color: "white",
+          padding: "12px 20px",
+          borderRadius: "8px",
+          fontSize: "14px",
+          zIndex: 1000,
+          boxShadow: "0 2px 8px rgba(0,0,0,0.15)"
+        }}>
+          {notifMessage}
+        </div>
+      )}
 
       <div className="tabbar">
         <Link href="/app/dashboard" className="tab-button">
