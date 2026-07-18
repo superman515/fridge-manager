@@ -373,12 +373,10 @@ export default function FamilyPage() {
 
                 return (
                   <div key={memberId} style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
+                    position: "relative",
                     marginBottom: "8px",
                   }}>
-                    <div className="member-card" style={{ flex: 1 }}>
+                    <div className="member-card">
                       <div className="member-avatar" style={{ background: profile?.photoURL ? "transparent" : avatarBg, overflow: "hidden" }}>
                         {profile?.photoURL ? (
                           <img src={profile.photoURL} alt={profile.displayName} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
@@ -408,17 +406,25 @@ export default function FamilyPage() {
                       <button
                         onClick={() => handleRemoveMember(memberId)}
                         style={{
-                          padding: "4px 8px",
-                          fontSize: "12px",
+                          position: "absolute",
+                          top: "8px",
+                          right: "8px",
+                          padding: "4px 6px",
                           backgroundColor: "#DC2626",
                           color: "white",
                           border: "none",
                           borderRadius: "4px",
                           cursor: "pointer",
-                          marginLeft: "8px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
                         }}
+                        title="멤버 제거"
                       >
-                        제거
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                          <line x1="18" y1="6" x2="6" y2="18"></line>
+                          <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
                       </button>
                     )}
                   </div>
