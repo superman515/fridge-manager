@@ -422,3 +422,79 @@
 - (Issue #9 완료)
 - 새 이슈: 멤버 프로필 읽기 권한 문제
 - 향후 기능: 그룹 관리 (멤버 삭제, 그룹명 변경 등)
+
+---
+
+## Issue #10 — Family Group Member Management
+**날짜:** 2026-07-18
+
+### 구현 내용
+가족 그룹 멤버 관리 기능 완성 (멤버 제거, 그룹명 수정, 그룹 삭제).
+
+#### Firestore 규칙 수정
+- users/{uid} read 규칙 확대: 모든 로그인 사용자가 다른 사용자 프로필 읽기 가능 (displayName, photoURL 공개)
+- users/{uid} write 규칙 추가: 그룹 creator만 멤버의 familyGroupId를 null로 설정 가능 (멤버 제거 시)
+  - 부분 업데이트 처리: `"familyGroupId" in request.resource.data` 확인
+- familyGroups update 규칙 추가: members.size() 감소 허용 (멤버 제거)
+
+#### Firebase 함수 추가 (`src/lib/firebase/family.ts`)
+- `removeMemberFromGroup(groupId, uid)`: members 배열에서 uid 제거 + users/{uid}.familyGroupId = null
+- `updateFamilyGroupName(groupId, newName)`: 그룹명 수정
+- `deleteFamilyGroup(groupId)`: 그룹 삭제 (cascade: 음식 삭제 → 그룹 삭제 → invites 문서 삭제)
+- `deleteAllFoodsInGroup(groupId)`: 그룹의 모든 음식 삭제 (helper)
+
+#### Family 페이지 UI 개선
+- 그룹명 수정 인터페이스:
+  - 기존: 별도 섹션의 "그룹명 수정" 버튼
+  - 변경: 그룹명 우측 연필(✏) 아이콘 버튼 → 클릭 시 인라인 에디트 + ✓/✕ 아이콘
+  - 인라인 저장/취소로 UX 개선
+- 멤버 제거 버튼:
+  - 카드 우측 상단에 X 아이콘 배치 (음식 삭제 버튼과 동일 스타일)
+  - admin only, 자신 제외
+  - 클릭 시 confirm 대화상자 → 제거 완료 후 "멤버가 제거되었습니다." alert
+  - UI에서 즉시 제거 (Firestore 리스너 대기 X)
+- 그룹 삭제 버튼:
+  - 빨간색, admin only
+  - 클릭 시 "그룹을 삭제하시겠습니까? 모든 음식 데이터도 삭제됩니다." confirm
+  - 완료 후 `/app/dashboard` 리다이렉트
+- 멤버 카드 간격 통일: marginBottom 10px (음식 카드와 동일)
+
+#### Dashboard 페이지 멤버 프로필 표시
+- avatar-group (우측 상단 멤버 동그라미) 업데이트:
+  - hardcoded 텍스트("엄", "아", "민") → 실제 멤버 프로필 이미지/displayName 첫 글자 표시
+  - memberProfiles state 추가, getFamilyGroup useEffect에서 프로필 로드
+  - 이미지 없으면 displayName 첫 글자 + 색상 배경
+
+#### Profile 페이지 버그 수정
+- statusFor 함수 기준 날짜 버그:
+  - 기존: 고정 날짜 2026-07-08 사용
+  - 수정: 현재 날짜 기준 계산 (getToday 함수 추가)
+  - 영향: 프로필 탭의 임박/경과 숫자가 정확하게 표시됨
+
+### Acceptance Criteria 달성
+- ✅ 멤버 목록이 올바르게 표시됨
+- ✅ admin만 멤버 제거 버튼 활성화됨
+- ✅ 멤버 제거 시 확인 대화상자 표시
+- ✅ 제거 후 members 배열에서 uid 제거됨
+- ✅ 제거된 사용자의 familyGroupId 초기화됨
+- ✅ 그룹명 수정 가능 (인라인 에디트)
+- ✅ 그룹 삭제 시 음식 데이터 cascade 처리 완료
+- ✅ 멤버 제거/그룹명 수정 완료 후 사용자 피드백 제공
+- ✅ UI에서 즉시 갱신 (Firestore 리스너 대기 X)
+
+### 검증 완료
+- `npm run build` — 타입 에러 없음
+- `npm run dev` — localhost:3000 정상 실행
+- 멤버 제거 기능 작동 (Firestore 규칙 배포 후)
+- 그룹명 수정 즉시 반영
+- 그룹 삭제 cascade 작동 확인
+
+### 변경 파일
+- `firestore.rules` (users read/write, familyGroups update 규칙)
+- `src/lib/firebase/family.ts` (4개 함수 추가)
+- `src/app/app/family/page.tsx` (UI 개선, 상태 관리)
+- `src/app/app/dashboard/page.tsx` (memberProfiles, avatar-group 업데이트)
+- `src/app/app/profile/page.tsx` (statusFor 날짜 버그 수정)
+
+### 다음 단계
+- (Issue #10 완료)
