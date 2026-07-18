@@ -109,6 +109,7 @@ export default function FamilyPage() {
     if (!group || editedName.trim() === "") return;
     try {
       await updateFamilyGroupName(group.id, editedName.trim());
+      setGroup({ ...group, name: editedName.trim() });
       setIsEditingName(false);
     } catch (err) {
       console.error("Failed to update group name:", err);
