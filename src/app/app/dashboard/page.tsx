@@ -5,9 +5,9 @@ import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserFamily } from "@/hooks/useUserFamily";
 import { useFoodList } from "@/hooks/useFoodList";
+import { useFamilyGroup } from "@/hooks/useFamilyGroup";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { addFood, deleteFood, updateFood } from "@/lib/firebase/food";
-import { getFamilyGroup } from "@/lib/firebase/family";
 import { getUserProfile } from "@/lib/firebase/user";
 import type { Food, FoodCategory, FoodLocation } from "@/types/food";
 import type { FamilyGroup } from "@/types/familyGroup";
@@ -85,8 +85,7 @@ export default function DashboardPage() {
   const { profile } = useUserProfile();
   const { familyGroupId } = useUserFamily();
   const { foods } = useFoodList(familyGroupId);
-
-  const [group, setGroup] = useState<FamilyGroup | null>(null);
+  const { group } = useFamilyGroup(familyGroupId);
   const [locationFilter, setLocationFilter] = useState<FoodLocation | "all">("all");
   const [statusFilter, setStatusFilter] = useState<StatusKey | "all">("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -104,27 +103,30 @@ export default function DashboardPage() {
     expiryDate: formatDateLocal(getToday()),
   });
 
+  const memberIdsKey = (group?.members.slice(0, 3) ?? []).join(",");
+
   useEffect(() => {
-    if (!familyGroupId) return;
-    getFamilyGroup(familyGroupId).then(async g => {
-      setGroup(g);
-      if (g && g.members.length > 0) {
-        const profiles: Record<string, User | null> = {};
-        for (const memberId of g.members.slice(0, 3)) {
-          try {
-            const profile = await getUserProfile(memberId);
-            profiles[memberId] = profile;
-          } catch (err) {
-            console.error(`Failed to load profile for ${memberId}:`, err);
-            profiles[memberId] = null;
-          }
+    const ids = memberIdsKey ? memberIdsKey.split(",") : [];
+    if (ids.length === 0) {
+      setMemberProfiles({});
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      const profiles: Record<string, User | null> = {};
+      for (const memberId of ids) {
+        try {
+          const profile = await getUserProfile(memberId);
+          profiles[memberId] = profile;
+        } catch (err) {
+          console.error(`Failed to load profile for ${memberId}:`, err);
+          profiles[memberId] = null;
         }
-        setMemberProfiles(profiles);
       }
-    }).catch(err => {
-      console.error("Failed to fetch family group:", err);
-    });
-  }, [familyGroupId]);
+      if (!cancelled) setMemberProfiles(profiles);
+    })();
+    return () => { cancelled = true; };
+  }, [memberIdsKey]);
 
   useEffect(() => {
     if (foods.length === 0) return;

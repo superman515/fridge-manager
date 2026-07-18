@@ -1,4 +1,4 @@
-import { collection, doc, getDoc, setDoc, serverTimestamp, updateDoc, where, query, getDocs, arrayUnion, arrayRemove, deleteDoc } from "firebase/firestore";
+import { collection, doc, getDoc, setDoc, serverTimestamp, updateDoc, where, query, getDocs, arrayUnion, arrayRemove, deleteDoc, onSnapshot } from "firebase/firestore";
 import { db } from "@/lib/firebase/client";
 import type { FamilyGroup } from "@/types/familyGroup";
 import { updateUserProfile } from "@/lib/firebase/auth";
@@ -50,6 +50,21 @@ export async function getFamilyGroup(groupId: string): Promise<FamilyGroup | nul
     id: snapshot.id,
     ...snapshot.data(),
   } as FamilyGroup;
+}
+
+export function subscribeToFamilyGroup(
+  groupId: string,
+  onData: (group: FamilyGroup | null) => void,
+  onError?: (error: Error) => void
+): () => void {
+  const ref = doc(db, "familyGroups", groupId);
+  return onSnapshot(
+    ref,
+    snapshot => {
+      onData(snapshot.exists() ? ({ id: snapshot.id, ...snapshot.data() } as FamilyGroup) : null);
+    },
+    err => onError?.(err)
+  );
 }
 
 export async function resolveInviteCode(code: string): Promise<string | null> {

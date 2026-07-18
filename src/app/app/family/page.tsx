@@ -5,17 +5,18 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserFamily } from "@/hooks/useUserFamily";
-import { getFamilyGroup, createFamilyGroup, resolveInviteCode, addMemberToGroup, removeMemberFromGroup, updateFamilyGroupName, deleteFamilyGroup } from "@/lib/firebase/family";
+import { useFamilyGroup } from "@/hooks/useFamilyGroup";
+import { createFamilyGroup, resolveInviteCode, addMemberToGroup, removeMemberFromGroup, updateFamilyGroupName, deleteFamilyGroup } from "@/lib/firebase/family";
 import { getUserProfile } from "@/lib/firebase/user";
 import type { FamilyGroup } from "@/types/familyGroup";
 import type { User } from "@/types/user";
 
 export default function FamilyPage() {
   const { firebaseUser } = useAuth();
-  const { familyGroupId } = useUserFamily();
+  const { familyGroupId, loading: familyLoading } = useUserFamily();
   const router = useRouter();
-  const [group, setGroup] = useState<FamilyGroup | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { group, loading: groupLoading } = useFamilyGroup(familyGroupId);
+  const loading = familyLoading || groupLoading;
   const [groupName, setGroupName] = useState("");
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -28,35 +29,30 @@ export default function FamilyPage() {
   const [editedName, setEditedName] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
 
+  const memberIdsKey = (group?.members ?? []).join(",");
+
   useEffect(() => {
-    if (!familyGroupId) {
-      setLoading(false);
+    const ids = memberIdsKey ? memberIdsKey.split(",") : [];
+    if (ids.length === 0) {
+      setMemberProfiles({});
       return;
     }
-
-    getFamilyGroup(familyGroupId).then(async g => {
-      setGroup(g);
-
-      if (g && g.members.length > 0) {
-        const profiles: Record<string, User | null> = {};
-        for (const memberId of g.members) {
-          try {
-            const profile = await getUserProfile(memberId);
-            profiles[memberId] = profile;
-          } catch (err) {
-            console.error(`Failed to load profile for ${memberId}:`, err);
-            profiles[memberId] = null;
-          }
+    let cancelled = false;
+    (async () => {
+      const profiles: Record<string, User | null> = {};
+      for (const memberId of ids) {
+        try {
+          const profile = await getUserProfile(memberId);
+          profiles[memberId] = profile;
+        } catch (err) {
+          console.error(`Failed to load profile for ${memberId}:`, err);
+          profiles[memberId] = null;
         }
-        setMemberProfiles(profiles);
       }
-
-      setLoading(false);
-    }).catch(err => {
-      console.error("Failed to fetch family group:", err);
-      setLoading(false);
-    });
-  }, [familyGroupId]);
+      if (!cancelled) setMemberProfiles(profiles);
+    })();
+    return () => { cancelled = true; };
+  }, [memberIdsKey]);
 
   const handleCreateGroup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -117,7 +113,6 @@ export default function FamilyPage() {
     if (!group || editedName.trim() === "") return;
     try {
       await updateFamilyGroupName(group.id, editedName.trim());
-      setGroup({ ...group, name: editedName.trim() });
       setIsEditingName(false);
     } catch (err) {
       console.error("Failed to update group name:", err);
@@ -129,12 +124,6 @@ export default function FamilyPage() {
     if (!group || !confirm("이 멤버를 제거하시겠습니까?")) return;
     try {
       await removeMemberFromGroup(group.id, uid);
-      setGroup({ ...group, members: group.members.filter(id => id !== uid) });
-      setMemberProfiles(prev => {
-        const updated = { ...prev };
-        delete updated[uid];
-        return updated;
-      });
       alert("멤버가 제거되었습니다.");
     } catch (err) {
       console.error("Failed to remove member:", err);

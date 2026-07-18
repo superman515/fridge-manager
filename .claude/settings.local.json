@@ -1,5 +1,10 @@
 {
   "enabledMcpjsonServers": [
     "notion"
-  ]
+  ],
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc *)"
+    ]
+  }
 }
