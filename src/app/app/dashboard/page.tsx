@@ -57,8 +57,8 @@ function statusFor(expiry: string): { key: StatusKey; label: string } {
 }
 
 function mdOf(expiry: string): string {
-  const [_, m, d] = expiry.split("-");
-  return `${m}/${d}`;
+  const [y, m, d] = expiry.split("-");
+  return `${y.slice(2)}/${m}/${d}`;
 }
 
 function addedAtMillis(f: Food): number {
