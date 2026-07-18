@@ -111,11 +111,18 @@ export default function DashboardPage() {
       if (g && g.members.length > 0) {
         const profiles: Record<string, User | null> = {};
         for (const memberId of g.members.slice(0, 3)) {
-          const profile = await getUserProfile(memberId);
-          profiles[memberId] = profile;
+          try {
+            const profile = await getUserProfile(memberId);
+            profiles[memberId] = profile;
+          } catch (err) {
+            console.error(`Failed to load profile for ${memberId}:`, err);
+            profiles[memberId] = null;
+          }
         }
         setMemberProfiles(profiles);
       }
+    }).catch(err => {
+      console.error("Failed to fetch family group:", err);
     });
   }, [familyGroupId]);
 
@@ -127,8 +134,13 @@ export default function DashboardPage() {
       const profiles: Record<string, User | null> = {};
       for (const uid of uniqueAddedByIds) {
         if (!addedByProfiles[uid]) {
-          const profile = await getUserProfile(uid);
-          profiles[uid] = profile;
+          try {
+            const profile = await getUserProfile(uid);
+            profiles[uid] = profile;
+          } catch (err) {
+            console.error(`Failed to load profile for ${uid}:`, err);
+            profiles[uid] = null;
+          }
         }
       }
       if (Object.keys(profiles).length > 0) {
@@ -136,7 +148,9 @@ export default function DashboardPage() {
       }
     };
 
-    loadProfiles();
+    loadProfiles().catch(err => {
+      console.error("Failed to load profiles:", err);
+    });
   }, [foods, addedByProfiles]);
 
   const filtered = foods

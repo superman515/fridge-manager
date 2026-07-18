@@ -147,7 +147,7 @@ export async function deleteFamilyGroup(groupId: string): Promise<void> {
     throw err;
   }
 
-  // Step 2: Get group to find inviteCode
+  // Step 2: Get group to find inviteCode (before deleting group)
   let inviteCode: string | null = null;
   try {
     const groupRef = doc(db, "familyGroups", groupId);
@@ -159,23 +159,23 @@ export async function deleteFamilyGroup(groupId: string): Promise<void> {
     console.error("Failed to fetch group for inviteCode:", err);
   }
 
-  // Step 3: Delete group doc
-  try {
-    const groupRef = doc(db, "familyGroups", groupId);
-    await deleteDoc(groupRef);
-  } catch (err) {
-    console.error("Failed to delete group:", err);
-    throw err;
-  }
-
-  // Step 4: Delete invites doc
+  // Step 3: Delete invites doc (before deleting group so rules can verify)
   if (inviteCode) {
     try {
       const inviteRef = doc(db, "invites", inviteCode.toUpperCase());
       await deleteDoc(inviteRef);
     } catch (err) {
       console.error("Failed to delete invite code:", err);
-      // Non-critical, don't throw
+      throw err;
     }
+  }
+
+  // Step 4: Delete group doc
+  try {
+    const groupRef = doc(db, "familyGroups", groupId);
+    await deleteDoc(groupRef);
+  } catch (err) {
+    console.error("Failed to delete group:", err);
+    throw err;
   }
 }

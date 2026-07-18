@@ -40,12 +40,20 @@ export default function FamilyPage() {
       if (g && g.members.length > 0) {
         const profiles: Record<string, User | null> = {};
         for (const memberId of g.members) {
-          const profile = await getUserProfile(memberId);
-          profiles[memberId] = profile;
+          try {
+            const profile = await getUserProfile(memberId);
+            profiles[memberId] = profile;
+          } catch (err) {
+            console.error(`Failed to load profile for ${memberId}:`, err);
+            profiles[memberId] = null;
+          }
         }
         setMemberProfiles(profiles);
       }
 
+      setLoading(false);
+    }).catch(err => {
+      console.error("Failed to fetch family group:", err);
       setLoading(false);
     });
   }, [familyGroupId]);
