@@ -1,4 +1,4 @@
-import { collection, doc, getDoc, setDoc, serverTimestamp, updateDoc, where, query, getDocs, arrayUnion, arrayRemove } from "firebase/firestore";
+import { collection, doc, getDoc, setDoc, serverTimestamp, updateDoc, where, query, getDocs, arrayUnion, arrayRemove, deleteDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase/client";
 import type { FamilyGroup } from "@/types/familyGroup";
 import { updateUserProfile } from "@/lib/firebase/auth";
@@ -110,5 +110,72 @@ export async function removeMemberFromGroup(groupId: string, uid: string): Promi
   } catch (err) {
     console.error("Failed to reset user familyGroupId:", err);
     throw err;
+  }
+}
+
+export async function updateFamilyGroupName(groupId: string, newName: string): Promise<void> {
+  const groupRef = doc(db, "familyGroups", groupId);
+
+  try {
+    await updateDoc(groupRef, {
+      name: newName,
+    });
+  } catch (err) {
+    console.error("Failed to update group name:", err);
+    throw err;
+  }
+}
+
+async function deleteAllFoodsInGroup(groupId: string): Promise<void> {
+  const foodsRef = collection(db, "foods");
+  const q = query(foodsRef, where("familyGroupId", "==", groupId));
+  const snapshot = await getDocs(q);
+
+  const deletePromises = snapshot.docs.map((doc) =>
+    deleteDoc(doc.ref)
+  );
+
+  await Promise.all(deletePromises);
+}
+
+export async function deleteFamilyGroup(groupId: string): Promise<void> {
+  // Step 1: Delete all foods in group
+  try {
+    await deleteAllFoodsInGroup(groupId);
+  } catch (err) {
+    console.error("Failed to delete foods:", err);
+    throw err;
+  }
+
+  // Step 2: Get group to find inviteCode
+  let inviteCode: string | null = null;
+  try {
+    const groupRef = doc(db, "familyGroups", groupId);
+    const snapshot = await getDoc(groupRef);
+    if (snapshot.exists()) {
+      inviteCode = snapshot.data().inviteCode;
+    }
+  } catch (err) {
+    console.error("Failed to fetch group for inviteCode:", err);
+  }
+
+  // Step 3: Delete group doc
+  try {
+    const groupRef = doc(db, "familyGroups", groupId);
+    await deleteDoc(groupRef);
+  } catch (err) {
+    console.error("Failed to delete group:", err);
+    throw err;
+  }
+
+  // Step 4: Delete invites doc
+  if (inviteCode) {
+    try {
+      const inviteRef = doc(db, "invites", inviteCode.toUpperCase());
+      await deleteDoc(inviteRef);
+    } catch (err) {
+      console.error("Failed to delete invite code:", err);
+      // Non-critical, don't throw
+    }
   }
 }
