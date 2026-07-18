@@ -13,9 +13,15 @@ service cloud.firestore {
 
     // --- users/{uid} ---
     // A user may read/write only their own user document.
+    // Group creator may reset member's familyGroupId to null (member removal).
     match /users/{uid} {
       allow read: if isSignedIn();
-      allow write: if isOwner(uid);
+      allow write: if isOwner(uid) ||
+        (isSignedIn() &&
+         request.resource.data.familyGroupId == null &&
+         (resource.data.familyGroupId != null) &&
+         exists(/databases/$(database)/documents/familyGroups/$(resource.data.familyGroupId)) &&
+         get(/databases/$(database)/documents/familyGroups/$(resource.data.familyGroupId)).data.createdBy == request.auth.uid);
     }
 
     // --- familyGroups/{groupId} ---
