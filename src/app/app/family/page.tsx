@@ -433,17 +433,30 @@ export default function FamilyPage() {
                 disabled={isDeleting}
                 style={{
                   width: "100%",
-                  padding: "8px",
-                  marginTop: "12px",
-                  backgroundColor: "#DC2626",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "4px",
+                  padding: "13px",
+                  marginTop: "28px",
+                  backgroundColor: "white",
+                  color: "#DC2626",
+                  border: "1px solid #E2E8F0",
+                  borderRadius: "8px",
                   cursor: isDeleting ? "not-allowed" : "pointer",
                   opacity: isDeleting ? 0.6 : 1,
+                  fontSize: "14px",
+                  fontWeight: "700",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "6px",
                 }}
               >
-                {isDeleting ? "삭제 중..." : "그룹 삭제"}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2">
+                  <path d="M3 6h18"></path>
+                  <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                  <line x1="10" y1="11" x2="10" y2="17"></line>
+                  <line x1="14" y1="11" x2="14" y2="17"></line>
+                </svg>
+                {isDeleting ? "삭제 중..." : "그룹 삭제하기"}
               </button>
             )}
           </div>
