@@ -121,6 +121,13 @@ export default function FamilyPage() {
     if (!group || !confirm("이 멤버를 제거하시겠습니까?")) return;
     try {
       await removeMemberFromGroup(group.id, uid);
+      setGroup({ ...group, members: group.members.filter(id => id !== uid) });
+      setMemberProfiles(prev => {
+        const updated = { ...prev };
+        delete updated[uid];
+        return updated;
+      });
+      alert("멤버가 제거되었습니다.");
     } catch (err) {
       console.error("Failed to remove member:", err);
       alert("멤버 제거 실패: " + (err instanceof Error ? err.message : ""));
@@ -374,7 +381,7 @@ export default function FamilyPage() {
                 return (
                   <div key={memberId} style={{
                     position: "relative",
-                    marginBottom: "10px",
+                    marginBottom: "2px",
                   }}>
                     <div className="member-card">
                       <div className="member-avatar" style={{ background: profile?.photoURL ? "transparent" : avatarBg, overflow: "hidden" }}>
