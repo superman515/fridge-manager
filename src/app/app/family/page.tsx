@@ -258,7 +258,80 @@ export default function FamilyPage() {
           <div className="family-container">
             <div className="group-card">
               <div className="group-label">우리 그룹</div>
-              <div className="group-title">{group.name}</div>
+              {isEditingName ? (
+                <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
+                  <input
+                    type="text"
+                    value={editedName}
+                    onChange={(e) => setEditedName(e.target.value)}
+                    autoFocus
+                    style={{
+                      flex: 1,
+                      padding: "8px",
+                      fontSize: "18px",
+                      fontWeight: "600",
+                      border: "1px solid #3B82F6",
+                      borderRadius: "4px",
+                      boxSizing: "border-box",
+                    }}
+                  />
+                  <button
+                    onClick={handleUpdateGroupName}
+                    style={{
+                      padding: "8px 12px",
+                      backgroundColor: "#3B82F6",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                      fontSize: "12px",
+                    }}
+                  >
+                    저장
+                  </button>
+                  <button
+                    onClick={() => setIsEditingName(false)}
+                    style={{
+                      padding: "8px 12px",
+                      backgroundColor: "#D1D5DB",
+                      color: "#111827",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                      fontSize: "12px",
+                    }}
+                  >
+                    취소
+                  </button>
+                </div>
+              ) : (
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "12px" }}>
+                  <div className="group-title">{group.name}</div>
+                  {firebaseUser?.uid === group.createdBy && (
+                    <button
+                      onClick={() => {
+                        setEditedName(group.name);
+                        setIsEditingName(true);
+                      }}
+                      style={{
+                        background: "transparent",
+                        border: "none",
+                        cursor: "pointer",
+                        padding: "4px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                      title="그룹명 수정"
+                    >
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                      </svg>
+                    </button>
+                  )}
+                </div>
+              )}
               <div className="group-code-section">
                 <div>
                   <div className="group-code-info">초대 코드</div>
@@ -348,83 +421,6 @@ export default function FamilyPage() {
               </svg>
               가족 초대하기
             </button>
-
-            {firebaseUser?.uid === group.createdBy && (
-              <div style={{
-                marginTop: "16px",
-                padding: "12px",
-                backgroundColor: "#F3F4F6",
-                borderRadius: "8px",
-              }}>
-                {isEditingName ? (
-                  <div>
-                    <input
-                      type="text"
-                      value={editedName}
-                      onChange={(e) => setEditedName(e.target.value)}
-                      placeholder="그룹명"
-                      style={{
-                        width: "100%",
-                        padding: "8px",
-                        marginBottom: "8px",
-                        border: "1px solid #D1D5DB",
-                        borderRadius: "4px",
-                        boxSizing: "border-box",
-                      }}
-                    />
-                    <div style={{ display: "flex", gap: "8px" }}>
-                      <button
-                        onClick={handleUpdateGroupName}
-                        style={{
-                          flex: 1,
-                          padding: "8px",
-                          backgroundColor: "#3B82F6",
-                          color: "white",
-                          border: "none",
-                          borderRadius: "4px",
-                          cursor: "pointer",
-                        }}
-                      >
-                        저장
-                      </button>
-                      <button
-                        onClick={() => setIsEditingName(false)}
-                        style={{
-                          flex: 1,
-                          padding: "8px",
-                          backgroundColor: "#D1D5DB",
-                          color: "#111827",
-                          border: "none",
-                          borderRadius: "4px",
-                          cursor: "pointer",
-                        }}
-                      >
-                        취소
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <button
-                    onClick={() => {
-                      setEditedName(group.name);
-                      setIsEditingName(true);
-                    }}
-                    style={{
-                      width: "100%",
-                      padding: "8px",
-                      backgroundColor: "#6B7280",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "4px",
-                      cursor: "pointer",
-                      marginBottom: "8px",
-                    }}
-                  >
-                    그룹명 수정
-                  </button>
-                )}
-              </div>
-            )}
 
             {firebaseUser?.uid === group.createdBy && (
               <button
