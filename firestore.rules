@@ -18,6 +18,7 @@ service cloud.firestore {
       allow read: if isSignedIn();
       allow write: if isOwner(uid) ||
         (isSignedIn() &&
+         "familyGroupId" in request.resource.data &&
          request.resource.data.familyGroupId == null &&
          (resource.data.familyGroupId != null) &&
          exists(/databases/$(database)/documents/familyGroups/$(resource.data.familyGroupId)) &&
