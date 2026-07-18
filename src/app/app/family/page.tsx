@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserFamily } from "@/hooks/useUserFamily";
-import { getFamilyGroup, createFamilyGroup, resolveInviteCode, addMemberToGroup } from "@/lib/firebase/family";
+import { getFamilyGroup, createFamilyGroup, resolveInviteCode, addMemberToGroup, removeMemberFromGroup, updateFamilyGroupName, deleteFamilyGroup } from "@/lib/firebase/family";
 import { getUserProfile } from "@/lib/firebase/user";
 import type { FamilyGroup } from "@/types/familyGroup";
 import type { User } from "@/types/user";
@@ -12,6 +13,7 @@ import type { User } from "@/types/user";
 export default function FamilyPage() {
   const { firebaseUser } = useAuth();
   const { familyGroupId } = useUserFamily();
+  const router = useRouter();
   const [group, setGroup] = useState<FamilyGroup | null>(null);
   const [loading, setLoading] = useState(true);
   const [groupName, setGroupName] = useState("");
@@ -22,6 +24,9 @@ export default function FamilyPage() {
   const [inviteCode, setInviteCode] = useState("");
   const [joining, setJoining] = useState(false);
   const [joinError, setJoinError] = useState<string | null>(null);
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [editedName, setEditedName] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     if (!familyGroupId) {
@@ -97,6 +102,40 @@ export default function FamilyPage() {
       setJoinError("이미 가입된 그룹이거나 참여할 수 없습니다");
     } finally {
       setJoining(false);
+    }
+  };
+
+  const handleUpdateGroupName = async () => {
+    if (!group || editedName.trim() === "") return;
+    try {
+      await updateFamilyGroupName(group.id, editedName.trim());
+      setIsEditingName(false);
+    } catch (err) {
+      console.error("Failed to update group name:", err);
+      alert("그룹명 수정 실패: " + (err instanceof Error ? err.message : ""));
+    }
+  };
+
+  const handleRemoveMember = async (uid: string) => {
+    if (!group || !confirm("이 멤버를 제거하시겠습니까?")) return;
+    try {
+      await removeMemberFromGroup(group.id, uid);
+    } catch (err) {
+      console.error("Failed to remove member:", err);
+      alert("멤버 제거 실패: " + (err instanceof Error ? err.message : ""));
+    }
+  };
+
+  const handleDeleteGroup = async () => {
+    if (!group || !confirm("그룹을 삭제하시겠습니까? 모든 음식 데이터도 삭제됩니다.")) return;
+    try {
+      setIsDeleting(true);
+      await deleteFamilyGroup(group.id);
+      router.push("/app/dashboard");
+    } catch (err) {
+      console.error("Failed to delete group:", err);
+      alert("그룹 삭제 실패: " + (err instanceof Error ? err.message : ""));
+      setIsDeleting(false);
     }
   };
 
@@ -245,33 +284,58 @@ export default function FamilyPage() {
                 const avatarChar = profile?.displayName?.[0] ?? "?";
                 const avatarBg = isCreator ? "#2563EB" : "#64748B";
                 const isCurrentUser = memberId === firebaseUser?.uid;
+                const isAdmin = firebaseUser?.uid === group.createdBy;
 
                 return (
-                  <div key={memberId} className="member-card">
-                    <div className="member-avatar" style={{ background: profile?.photoURL ? "transparent" : avatarBg, overflow: "hidden" }}>
-                      {profile?.photoURL ? (
-                        <img src={profile.photoURL} alt={profile.displayName} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                      ) : (
-                        avatarChar
-                      )}
-                    </div>
-                    <div className="member-info">
-                      <div className="member-name-row">
-                        <span className="member-name">
-                          {profile?.displayName ?? "로딩 중..."}{isCurrentUser && " (나)"}
-                        </span>
-                        <span
-                          className="member-role"
-                          style={{
-                            color: isCreator ? "#2563EB" : "#475569",
-                            background: isCreator ? "rgba(37,99,235,.10)" : "#F1F5F9",
-                          }}
-                        >
-                          {isCreator ? "관리자" : "구성원"}
-                        </span>
+                  <div key={memberId} style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "8px",
+                  }}>
+                    <div className="member-card" style={{ flex: 1 }}>
+                      <div className="member-avatar" style={{ background: profile?.photoURL ? "transparent" : avatarBg, overflow: "hidden" }}>
+                        {profile?.photoURL ? (
+                          <img src={profile.photoURL} alt={profile.displayName} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                        ) : (
+                          avatarChar
+                        )}
                       </div>
-                      <div className="member-stats">가족 구성원</div>
+                      <div className="member-info">
+                        <div className="member-name-row">
+                          <span className="member-name">
+                            {profile?.displayName ?? "로딩 중..."}{isCurrentUser && " (나)"}
+                          </span>
+                          <span
+                            className="member-role"
+                            style={{
+                              color: isCreator ? "#2563EB" : "#475569",
+                              background: isCreator ? "rgba(37,99,235,.10)" : "#F1F5F9",
+                            }}
+                          >
+                            {isCreator ? "관리자" : "구성원"}
+                          </span>
+                        </div>
+                        <div className="member-stats">가족 구성원</div>
+                      </div>
                     </div>
+                    {isAdmin && memberId !== firebaseUser?.uid && (
+                      <button
+                        onClick={() => handleRemoveMember(memberId)}
+                        style={{
+                          padding: "4px 8px",
+                          fontSize: "12px",
+                          backgroundColor: "#DC2626",
+                          color: "white",
+                          border: "none",
+                          borderRadius: "4px",
+                          cursor: "pointer",
+                          marginLeft: "8px",
+                        }}
+                      >
+                        제거
+                      </button>
+                    )}
                   </div>
                 );
               })}
@@ -284,6 +348,103 @@ export default function FamilyPage() {
               </svg>
               가족 초대하기
             </button>
+
+            {firebaseUser?.uid === group.createdBy && (
+              <div style={{
+                marginTop: "16px",
+                padding: "12px",
+                backgroundColor: "#F3F4F6",
+                borderRadius: "8px",
+              }}>
+                {isEditingName ? (
+                  <div>
+                    <input
+                      type="text"
+                      value={editedName}
+                      onChange={(e) => setEditedName(e.target.value)}
+                      placeholder="그룹명"
+                      style={{
+                        width: "100%",
+                        padding: "8px",
+                        marginBottom: "8px",
+                        border: "1px solid #D1D5DB",
+                        borderRadius: "4px",
+                        boxSizing: "border-box",
+                      }}
+                    />
+                    <div style={{ display: "flex", gap: "8px" }}>
+                      <button
+                        onClick={handleUpdateGroupName}
+                        style={{
+                          flex: 1,
+                          padding: "8px",
+                          backgroundColor: "#3B82F6",
+                          color: "white",
+                          border: "none",
+                          borderRadius: "4px",
+                          cursor: "pointer",
+                        }}
+                      >
+                        저장
+                      </button>
+                      <button
+                        onClick={() => setIsEditingName(false)}
+                        style={{
+                          flex: 1,
+                          padding: "8px",
+                          backgroundColor: "#D1D5DB",
+                          color: "#111827",
+                          border: "none",
+                          borderRadius: "4px",
+                          cursor: "pointer",
+                        }}
+                      >
+                        취소
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => {
+                      setEditedName(group.name);
+                      setIsEditingName(true);
+                    }}
+                    style={{
+                      width: "100%",
+                      padding: "8px",
+                      backgroundColor: "#6B7280",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                      marginBottom: "8px",
+                    }}
+                  >
+                    그룹명 수정
+                  </button>
+                )}
+              </div>
+            )}
+
+            {firebaseUser?.uid === group.createdBy && (
+              <button
+                onClick={handleDeleteGroup}
+                disabled={isDeleting}
+                style={{
+                  width: "100%",
+                  padding: "8px",
+                  marginTop: "12px",
+                  backgroundColor: "#DC2626",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: isDeleting ? "not-allowed" : "pointer",
+                  opacity: isDeleting ? 0.6 : 1,
+                }}
+              >
+                {isDeleting ? "삭제 중..." : "그룹 삭제"}
+              </button>
+            )}
           </div>
         )}
       </div>
