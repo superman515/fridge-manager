@@ -14,7 +14,8 @@ service cloud.firestore {
     // --- users/{uid} ---
     // A user may read/write only their own user document.
     match /users/{uid} {
-      allow read, write: if isOwner(uid);
+      allow read: if isSignedIn();
+      allow write: if isOwner(uid);
     }
 
     // --- familyGroups/{groupId} ---

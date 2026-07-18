@@ -1,4 +1,4 @@
-import { collection, doc, getDoc, setDoc, serverTimestamp, updateDoc, where, query, getDocs, arrayUnion } from "firebase/firestore";
+import { collection, doc, getDoc, setDoc, serverTimestamp, updateDoc, where, query, getDocs, arrayUnion, arrayRemove } from "firebase/firestore";
 import { db } from "@/lib/firebase/client";
 import type { FamilyGroup } from "@/types/familyGroup";
 import { updateUserProfile } from "@/lib/firebase/auth";
@@ -85,6 +85,30 @@ export async function addMemberToGroup(groupId: string, uid: string): Promise<vo
     console.log("Step 2: Success - user doc updated");
   } catch (err) {
     console.error("Step 2 failed:", err);
+    throw err;
+  }
+}
+
+export async function removeMemberFromGroup(groupId: string, uid: string): Promise<void> {
+  const groupRef = doc(db, "familyGroups", groupId);
+
+  try {
+    // Remove uid from members array
+    await updateDoc(groupRef, {
+      members: arrayRemove(uid),
+    });
+  } catch (err) {
+    console.error("Failed to remove member from group:", err);
+    throw err;
+  }
+
+  try {
+    // Reset user's familyGroupId to null
+    await updateDoc(doc(db, "users", uid), {
+      familyGroupId: null,
+    });
+  } catch (err) {
+    console.error("Failed to reset user familyGroupId:", err);
     throw err;
   }
 }
