@@ -142,12 +142,12 @@ export default function ProfilePage() {
 
   return (
     <div className="phone">
-      <div className="scr">
-        <div className="header">
-          <div className="header-group-name">내 정보</div>
-          <div className="header-title">프로필</div>
-        </div>
+      <div className="header">
+        <div className="header-group-name">내 정보</div>
+        <div className="header-title">프로필</div>
+      </div>
 
+      <div className="scr">
         <div className="profile-container">
           <div className="profile-card">
             <div className="profile-avatar" style={{ background: "#64748B" }}>

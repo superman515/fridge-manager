@@ -224,53 +224,53 @@ export default function DashboardPage() {
 
   return (
     <div className="phone">
-      <div className="scr">
-        <div className="header">
-          <div className="header-top">
-            <div>
-              <div className="header-group-name">그룹명</div>
-              <div className="header-title">{group?.name ?? "냉장고"}</div>
-            </div>
-            <div className="avatar-group">
-              {group?.members.slice(0, 3).map((memberId, i) => {
-                const profile = memberProfiles[memberId];
-                const avatarChar = profile?.displayName?.[0] ?? "?";
-                const avatarBg = i === 0 ? memberColors["엄마"] : i === 1 ? memberColors["아빠"] : memberColors["나"];
-                return (
-                  <div
-                    key={memberId}
-                    className="avatar"
-                    style={{
-                      background: profile?.photoURL ? "transparent" : avatarBg,
-                      overflow: "hidden",
-                    }}
-                  >
-                    {profile?.photoURL ? (
-                      <img src={profile.photoURL} alt={profile.displayName} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                    ) : (
-                      avatarChar
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+      <div className="header">
+        <div className="header-top">
+          <div>
+            <div className="header-group-name">그룹명</div>
+            <div className="header-title">{group?.name ?? "냉장고"}</div>
           </div>
-
-          <div className="search-container">
-            <svg className="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="11" cy="11" r="7"></circle>
-              <line x1="16.5" y1="16.5" x2="21" y2="21"></line>
-            </svg>
-            <input
-              className="search-input"
-              type="text"
-              placeholder="음식 이름 검색"
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-            />
+          <div className="avatar-group">
+            {group?.members.slice(0, 3).map((memberId, i) => {
+              const profile = memberProfiles[memberId];
+              const avatarChar = profile?.displayName?.[0] ?? "?";
+              const avatarBg = i === 0 ? memberColors["엄마"] : i === 1 ? memberColors["아빠"] : memberColors["나"];
+              return (
+                <div
+                  key={memberId}
+                  className="avatar"
+                  style={{
+                    background: profile?.photoURL ? "transparent" : avatarBg,
+                    overflow: "hidden",
+                  }}
+                >
+                  {profile?.photoURL ? (
+                    <img src={profile.photoURL} alt={profile.displayName} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  ) : (
+                    avatarChar
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
 
+        <div className="search-container">
+          <svg className="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="11" cy="11" r="7"></circle>
+            <line x1="16.5" y1="16.5" x2="21" y2="21"></line>
+          </svg>
+          <input
+            className="search-input"
+            type="text"
+            placeholder="음식 이름 검색"
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+          />
+        </div>
+      </div>
+
+      <div className="scr">
         <div className="summary-row">
           <button
             className="summary-card"

@@ -167,12 +167,12 @@ export default function FamilyPage() {
 
   return (
     <div className="phone">
-      <div className="scr">
-        <div className="header">
-          <div className="header-group-name">함께 쓰는 사람들</div>
-          <div className="header-title">가족 그룹</div>
-        </div>
+      <div className="header">
+        <div className="header-group-name">함께 쓰는 사람들</div>
+        <div className="header-title">가족 그룹</div>
+      </div>
 
+      <div className="scr">
         {!group ? (
           <div className="family-container">
             {/* Tab Navigation */}
