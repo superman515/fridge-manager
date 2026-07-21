@@ -59,7 +59,7 @@ input, select {
 @media (max-width: 480px) {
   .phone {
     width: 100vw;
-    height: 100vh;
+    height: 100dvh;
     border-radius: 0;
     box-shadow: none;
     border: none;
