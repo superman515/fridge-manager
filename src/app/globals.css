@@ -19,6 +19,12 @@ body {
   padding: 16px;
 }
 
+@media (max-width: 480px) {
+  body {
+    padding: 0;
+  }
+}
+
 a {
   color: #2563EB;
   text-decoration: none;
@@ -48,6 +54,16 @@ input, select {
   border-radius: 40px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   border: 12px solid #1a1a1a;
+}
+
+@media (max-width: 480px) {
+  .phone {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+    box-shadow: none;
+    border: none;
+  }
 }
 
 .scr {
