@@ -23,6 +23,64 @@
 </helmet>
 <div style="width:390px;height:844px;position:relative;display:flex;flex-direction:column;background:#F8FAFC;overflow:hidden;font-family:'Malgun Gothic','Segoe UI',system-ui,-apple-system,sans-serif">
 
+  <!-- ===================== WELCOME ===================== -->
+  <sc-if value="{{ isWelcome }}" hint-placeholder-val="{{ false }}">
+  <div style="flex:1;display:flex;flex-direction:column;background:linear-gradient(180deg,#EEF3FC 0%,#F8FAFC 55%)">
+    <div style="flex:1;display:flex;align-items:center;justify-content:center">
+      <div style="position:relative;width:168px;height:168px;display:flex;align-items:center;justify-content:center">
+        <div style="position:absolute;inset:0;border-radius:40px;background:#2563EB;box-shadow:0 20px 44px rgba(37,99,235,.28)"></div>
+        <svg width="76" height="76" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" style="position:relative"><rect x="6" y="3" width="12" height="18" rx="2.4"></rect><line x1="6" y1="10.5" x2="18" y2="10.5"></line><line x1="9" y1="6" x2="9" y2="7.6"></line><line x1="9" y1="13.4" x2="9" y2="15.4"></line></svg>
+        <span style="position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;background:#16A34A;border:3px solid #F8FAFC"></span>
+      </div>
+    </div>
+    <div style="padding:0 32px 56px;display:flex;flex-direction:column;align-items:center;text-align:center">
+      <div style="display:flex;gap:8px;margin-bottom:18px">
+        <span style="width:8px;height:8px;border-radius:50%;background:#16A34A"></span>
+        <span style="width:8px;height:8px;border-radius:50%;background:#F59E0B"></span>
+        <span style="width:8px;height:8px;border-radius:50%;background:#DC2626"></span>
+      </div>
+      <div style="font-size:32px;font-weight:700;color:#0F172A;letter-spacing:-.01em">냉장고 관리</div>
+      <div style="font-size:15px;color:#64748B;margin-top:12px;line-height:1.6">가족과 함께 유통기한을 관리하세요.</div>
+      <div style="display:flex;gap:10px;width:100%;margin-top:32px">
+        <button onClick="{{ goLogin }}" style="flex:1;padding:15px;border-radius:8px;border:1px solid #E2E8F0;background:#fff;color:#0F172A;font-size:15px;font-weight:700;box-shadow:0 1px 2px rgba(15,23,42,.04)">로그인</button>
+        <button onClick="{{ goApp }}" style="flex:1;padding:15px;border-radius:8px;border:none;background:#2563EB;color:#fff;font-size:15px;font-weight:700;box-shadow:0 8px 20px rgba(37,99,235,.28)">회원가입</button>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ===================== LOGIN ===================== -->
+  <sc-if value="{{ isLogin }}" hint-placeholder-val="{{ false }}">
+  <div style="flex:1;display:flex;flex-direction:column;background:#F8FAFC;padding:64px 24px 40px;overflow-y:auto">
+    <div style="font-size:26px;font-weight:700;color:#0F172A;text-align:center;letter-spacing:-.01em">로그인</div>
+
+    <div style="margin-top:40px;display:flex;flex-direction:column;gap:6px">
+      <label style="font-size:13px;font-weight:600;color:#475569">이메일</label>
+      <input type="email" placeholder="you@example.com" style="width:100%;padding:13px 14px;border:1px solid #E2E8F0;border-radius:8px;background:#fff;font-size:14px;color:#0F172A;outline:none"/>
+    </div>
+
+    <div style="margin-top:22px;display:flex;flex-direction:column;gap:6px">
+      <label style="font-size:13px;font-weight:600;color:#475569">비밀번호</label>
+      <input type="password" placeholder="••••••••" style="width:100%;padding:13px 14px;border:1px solid #E2E8F0;border-radius:8px;background:#fff;font-size:14px;color:#0F172A;outline:none"/>
+    </div>
+
+    <button onClick="{{ goApp }}" style="width:100%;margin-top:28px;padding:15px;border-radius:8px;border:none;background:#2563EB;color:#fff;font-size:15px;font-weight:700;box-shadow:0 8px 20px rgba(37,99,235,.24)">로그인</button>
+
+    <div style="display:flex;align-items:center;gap:12px;margin:24px 0">
+      <div style="flex:1;height:1px;background:#E2E8F0"></div>
+      <span style="font-size:12px;color:#94A3B8">또는</span>
+      <div style="flex:1;height:1px;background:#E2E8F0"></div>
+    </div>
+
+    <button onClick="{{ goApp }}" style="width:100%;padding:14px;border-radius:8px;border:1px solid #E2E8F0;background:#fff;color:#0F172A;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:10px">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.6v3h3.9c2.3-2.1 3.5-5.2 3.5-8.8Z"/><path fill="#34A853" d="M12 24c3.2 0 5.9-1.1 7.9-2.9l-3.9-3c-1.1.7-2.4 1.2-4 1.2-3.1 0-5.7-2.1-6.6-4.9H1.3v3.1C3.3 21.3 7.3 24 12 24Z"/><path fill="#FBBC05" d="M5.4 14.4c-.2-.7-.4-1.4-.4-2.4s.1-1.6.4-2.4V6.5H1.3C.5 8.1 0 9.9 0 12s.5 3.9 1.3 5.5l4.1-3.1Z"/><path fill="#EA4335" d="M12 4.8c1.7 0 3.3.6 4.5 1.8l3.4-3.4C17.9 1.2 15.2 0 12 0 7.3 0 3.3 2.7 1.3 6.5l4.1 3.1c.9-2.8 3.5-4.8 6.6-4.8Z"/></svg>
+      Google로 로그인
+    </button>
+
+    <div style="text-align:center;font-size:13px;color:#64748B;margin-top:24px">계정이 없으신가요? <a onClick="{{ goApp }}" style="color:#2563EB;font-weight:700;cursor:pointer">회원가입</a></div>
+  </div>
+  </sc-if>
+
   <!-- ===================== FRIDGE ===================== -->
   <sc-if value="{{ isFridge }}" hint-placeholder-val="{{ true }}">
   <div class="scr" style="flex:1;overflow-y:auto;overflow-x:hidden">
@@ -224,13 +282,14 @@
   </sc-if>
 
   <!-- ===================== FAB ===================== -->
-  <sc-if value="{{ isFridge }}" hint-placeholder-val="{{ true }}">
+  <sc-if value="{{ isFridge }}" hint-placeholder-val="{{ false }}">
     <button onClick="{{ openAdd }}" style="position:absolute;right:16px;bottom:80px;width:54px;height:54px;border-radius:50%;background:#2563EB;border:none;box-shadow:0 4px 12px rgba(37,99,235,.35);display:flex;align-items:center;justify-content:center;z-index:20">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
     </button>
   </sc-if>
 
   <!-- ===================== TAB BAR ===================== -->
+  <sc-if value="{{ notWelcome }}" hint-placeholder-val="{{ true }}">
   <div style="height:64px;flex:none;background:#fff;border-top:1px solid #E2E8F0;display:flex;align-items:stretch;z-index:10">
     <button onClick="{{ goFridge }}" style="flex:1;background:none;border:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:{{ fridgeColor }}">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="6" y="3" width="12" height="18" rx="2"></rect><line x1="6" y1="10" x2="18" y2="10"></line><line x1="9" y1="6" x2="9" y2="7.5"></line><line x1="9" y1="13" x2="9" y2="15"></line></svg>
@@ -245,6 +304,7 @@
       <span style="font-size:11px;font-weight:600">프로필</span>
     </button>
   </div>
+  </sc-if>
 
   <!-- ===================== ADD MODAL ===================== -->
   <sc-if value="{{ showAdd }}" hint-placeholder-val="{{ false }}">
@@ -296,7 +356,7 @@
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:844},&quot;statusEmphasis&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;뱃지&quot;,&quot;options&quot;:[&quot;점만&quot;,&quot;뱃지&quot;,&quot;카드&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;상태 강조&quot;,&quot;label&quot;:&quot;유통상태 표현&quot;},&quot;cardSurface&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;그림자&quot;,&quot;options&quot;:[&quot;보더&quot;,&quot;그림자&quot;,&quot;채움&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;카드 표면&quot;,&quot;label&quot;:&quot;카드 질감&quot;},&quot;density&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;촘촘&quot;,&quot;options&quot;:[&quot;넉넉&quot;,&quot;기본&quot;,&quot;촘촘&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;밀도&quot;,&quot;label&quot;:&quot;카드 밀도&quot;},&quot;cardGap&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:10,&quot;min&quot;:0,&quot;max&quot;:24,&quot;step&quot;:1,&quot;unit&quot;:&quot;px&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;밀도&quot;,&quot;label&quot;:&quot;카드 간격&quot;}}">
 class Component extends DCLogic {
   state = {
-    tab: 'fridge',
+    tab: 'welcome',
     groupName: '김가네 냉장고',
     editingGroup: false,
     groupNameDraft: '',
@@ -439,6 +499,10 @@ class Component extends DCLogic {
       onGroupNameChange: e => this.setState({ groupNameDraft: e.target.value }),
       startEditGroup: () => this.setState(st => ({ editingGroup: true, groupNameDraft: st.groupName })),
       saveGroupName: () => this.setState(st => ({ editingGroup: false, groupName: st.groupNameDraft.trim() || st.groupName })),
+      isWelcome: tab === 'welcome', notWelcome: tab !== 'welcome' && tab !== 'login',
+      isLogin: tab === 'login',
+      goApp: () => this.setState({ tab: 'fridge' }),
+      goLogin: () => this.setState({ tab: 'login' }),
       isFridge: tab === 'fridge', isFamily: tab === 'family', isProfile: tab === 'profile',
       foods: filtered, showEmpty: filtered.length === 0,
       summary, locChips, q, onSearch: e => this.setState({ q: e.target.value }),
