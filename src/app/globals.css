@@ -7,6 +7,11 @@
   box-sizing: border-box;
 }
 
+html {
+  overflow: hidden;
+  height: 100%;
+}
+
 body {
   margin: 0;
   font-family: 'Malgun Gothic', 'Segoe UI', system-ui, -apple-system, sans-serif;
@@ -15,8 +20,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
+  height: 100%;
   padding: 16px;
+  overflow: hidden;
 }
 
 @media (max-width: 480px) {
