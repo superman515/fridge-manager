@@ -559,3 +559,50 @@
 
 ### 다음 단계
 - (Issue #11 완료)
+
+---
+
+## Issue #12 — Login Page: Remember Email Feature
+**날짜:** 2026-07-23
+
+### 구현 내용
+로그인 페이지에서 사용자가 이메일 저장 기능으로 편의성 향상.
+
+#### Custom Hook (`src/hooks/useRememberedEmail.ts`)
+- `useRememberedEmail()` — localStorage 기반 이메일 기억
+- `{ email, setEmail, shouldRemember, setShouldRemember, saveEmail, deleteEmail }` 반환
+- 마운트 시 localStorage에서 저장된 이메일 자동 로드
+- 저장된 이메일 있으면 shouldRemember도 true로 초기화 (로그아웃 후 복귀해도 체크박스 유지)
+
+#### Login 페이지 업데이트 (`src/app/auth/login/page.tsx`)
+- useRememberedEmail 훅 통합
+- 체크박스 추가: 비밀번호 입력 아래, position: absolute + left 0% 배치
+- 체크 시 로그인 성공 후 localStorage에 이메일 저장
+- 체크 해제 시 저장된 이메일 삭제
+- Fridge_Manager.dc.html 디자인 적용 (커스텀 체크박스 스타일)
+- Google 로그인은 이메일 저장 제외
+
+#### 디자인 문서 (`docs/superpowers/specs/2026-07-23-remember-email-design.md`)
+- useRememberedEmail 훅 구현 상세
+- 로그인 페이지 변경 사항
+- 데이터 흐름 및 보안 고려사항
+
+### Acceptance Criteria 달성
+- ✅ 체크박스 체크 후 로그인 시 이메일 localStorage에 저장됨
+- ✅ 페이지 새로고침 후 이메일이 자동으로 입력됨
+- ✅ 체크박스 상태도 유지됨 (로그아웃 후 복귀해도)
+- ✅ 체크 해제 후 로그인 시 저장된 이메일 삭제됨
+- ✅ Google 로그인은 이메일 저장 불가
+- ✅ Fridge_Manager.dc.html 디자인 100% 적용
+
+### 검증 완료
+- `npm run build` — 타입 에러 없음
+- `npm run dev` — localhost:3000 정상 실행
+
+### 변경 파일
+- `src/hooks/useRememberedEmail.ts` (신규)
+- `src/app/auth/login/page.tsx` (체크박스 추가, 훅 통합)
+- `docs/superpowers/specs/2026-07-23-remember-email-design.md` (신규)
+
+### 다음 단계
+- (Issue #12 완료)

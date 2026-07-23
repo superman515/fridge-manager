@@ -4,10 +4,11 @@ import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signInWithEmail, signInWithGoogle, getAuthErrorMessage } from "@/lib/firebase/auth";
+import { useRememberedEmail } from "@/hooks/useRememberedEmail";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
+  const { email, setEmail, shouldRemember, setShouldRemember, saveEmail, deleteEmail } = useRememberedEmail();
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -30,6 +31,11 @@ export default function LoginPage() {
     setSubmitting(true);
     try {
       await signInWithEmail(email, password);
+      if (shouldRemember) {
+        saveEmail(email);
+      } else {
+        deleteEmail();
+      }
       router.push("/app/dashboard");
     } catch (err) {
       setError(getAuthErrorMessage(err));
@@ -78,7 +84,7 @@ export default function LoginPage() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} style={{ marginTop: 40, display: "flex", flexDirection: "column", gap: 22 }}>
+      <div style={{ marginTop: 40, display: "flex", flexDirection: "column" }}>
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
           <label style={{ fontSize: 13, fontWeight: 600, color: "#475569" }}>
             이메일
@@ -102,7 +108,7 @@ export default function LoginPage() {
           />
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        <div style={{ marginTop: 22, display: "flex", flexDirection: "column", gap: 6 }}>
           <label style={{ fontSize: 13, fontWeight: 600, color: "#475569" }}>
             비밀번호
           </label>
@@ -125,10 +131,54 @@ export default function LoginPage() {
           />
         </div>
 
+        <div style={{ width: "100%", marginTop: 16, position: "relative", height: 22 }}>
+          <button
+            onClick={() => setShouldRemember(!shouldRemember)}
+            disabled={submitting}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              background: "none",
+              border: "none",
+              padding: "2px 0",
+              width: "fit-content",
+              position: "absolute",
+              left: "0%",
+              transform: "translateX(-0%)",
+              cursor: "pointer"
+            }}
+          >
+            <span
+              style={{
+                width: 18,
+                height: 18,
+                borderRadius: 5,
+                border: `1.5px solid ${shouldRemember ? "#2563EB" : "#CBD5E1"}`,
+                background: shouldRemember ? "#2563EB" : "#fff",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flex: "none"
+              }}
+            >
+              {shouldRemember && (
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3">
+                  <path d="M4 12l5 5L20 6"></path>
+                </svg>
+              )}
+            </span>
+            <span style={{ fontSize: 13, color: "#475569", fontWeight: 600, whiteSpace: "nowrap" }}>
+              이메일 저장
+            </span>
+          </button>
+        </div>
+
         <button
-          type="submit"
+          onClick={handleSubmit}
           style={{
             width: "100%",
+            marginTop: 20,
             padding: "15px",
             borderRadius: 8,
             border: "none",
@@ -137,14 +187,13 @@ export default function LoginPage() {
             fontSize: 15,
             fontWeight: 700,
             boxShadow: "0 8px 20px rgba(37,99,235,.24)",
-            cursor: "pointer",
-            marginTop: 8
+            cursor: "pointer"
           }}
           disabled={submitting}
         >
           {submitting ? "로그인 중..." : "로그인"}
         </button>
-      </form>
+      </div>
 
       <div style={{
         display: "flex",
